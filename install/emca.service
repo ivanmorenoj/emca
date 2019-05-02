@@ -1,0 +1,15 @@
+Description= EMCA Service
+
+Wants=network.target
+After=syslog.target network-online.target mysqld.service
+Requires=mysqld.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/emca
+Restart=on-failure
+RestartSec=10
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target

@@ -14,12 +14,15 @@
 #include "CircularList.cpp"
 #include "cfgSettings.h"
 
+#define EVER    ;;    
+
+//#define INSTALL
 #ifdef INSTALL
     #define CFG_PATH    "/etc/emca/config.cfg"
     #define LOG_PATH    "/var/log/emca/emca.log"
 #else
     #define CFG_PATH    "/home/dev/emca_gases/mainConfig.cfg"
-    #define LOG_PATH    "/home/dev/emca_gases/emca.log"
+    #define LOG_PATH    "/home/dev/emca_gases/emcaLOG.log"
 #endif 
 /**
  *  adjustFunction for alphasense sensor
@@ -30,9 +33,9 @@ double adjust(double vi,unsigned char opt){
 
 int main(int argc, char const *argv[])
 {   
-    plog::init(plog::debug, LOG_PATH, 10000, 3); // Initialize the logger.
+    plog::init(plog::debug, LOG_PATH, 1000000, 3); // Initialize the logger. 1MB
     
-    printf("[+] Init program PID = %d\n\tConf file in \'%s\'\n\tLog file in \'%s\'\n",
+    printf("[+] Init program PID = %d\n  Config file in \'%s\'\n  Log file in \'%s\'\n",
                 (int)getpid(),CFG_PATH,LOG_PATH);
     PLOG_INFO << "\n\nInit program";
     /* DataBase structs*/
@@ -104,7 +107,7 @@ int main(int argc, char const *argv[])
         printf("Voltage adc[%d]: %.6f\n",i,_adc[i].getVoltage());
     }*/
     
-    for(;;) {
+    for(EVER) {
         _ab.temp = _amb.getTemperature();
         _ab.pre = _amb.getPressure();
         _ab.hum = _amb.getHumidity();

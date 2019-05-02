@@ -7,7 +7,7 @@ BUILD_PATH = build
 BIN_PATH = $(BUILD_PATH)/bin
 
 # executable # 
-BIN_NAME = emca_gases
+BIN_NAME = emca
 
 # extensions #
 SRC_EXT = cpp
@@ -19,7 +19,9 @@ REMOTE_DIR	= ~/emca_gases/
 REMOTE_WAN	= ivan28823.sytes.net
 
 # config file
-CFG_FILE = mainConfig.cfg
+CFG_FILE 		= mainConfig.cfg
+SYSTEMD_UNIT	= install/emca.service
+
 # code lists #
 # Find all source files in the source directory, sorted by
 # most recently modified
@@ -82,12 +84,15 @@ $(BUILD_PATH)/%.o: $(SRC_PATH)/%.$(SRC_EXT)
 # Install the binary on /usr/bin/ directory
 install: dirs $(BIN_PATH)/$(BIN_NAME)
 	@echo "[LOG] Installing on /usr/bin/$(BIN_NAME)" 
-	@sudo cp $(BIN_PATH)/$(BIN_NAME) /usr/bin/
-	@echo "[LOG] copy $(CFG_FILE) on /etc/emca/" 
-	@sudo mkdir -p /etc/emca/
-	@sudo mkdir -p /var/log/emca/
-	@sudo cp $(CFG_FILE) /etc/emca/ 
-	@echo "[LOG] creating /var/log/emca/ where is saved logfile" 
+	@cp $(BIN_PATH)/$(BIN_NAME) /usr/bin/
+	@echo "[LOG] copy $(CFG_FILE) on /etc/emca/config.cfg" 
+	@mkdir -p /etc/emca/
+	@cp $(CFG_FILE) /etc/emca/config.cfg 
+	@echo "[LOG] creating /var/log/emca/ where is saved logfile"
+	@mkdir -p /var/log/emca/
+	@echo "[LOG] copy $(SYSTEMD_UNIT) on /etc/systemd/system/"
+	@cp $(SYSTEMD_UNIT) /etc/systemd/system/
+	@systemctl daemon-reload
 
 # Copy all project to remote host, you have to fill remote variables
 # this way is easier than type a scp command each time to copy the dev
