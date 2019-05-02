@@ -3,7 +3,7 @@
 #include <cstdlib>
 #include <libconfig.h++>
 #include <cstring>
-
+#include "plog/Log.h"
 #include "cfgSettings.h"
 
 int getSettings(struct projectCfg *_con,const char *_path) {
@@ -14,10 +14,10 @@ int getSettings(struct projectCfg *_con,const char *_path) {
     try {
         cfg.readFile(_path);
     } catch (const libconfig::FileIOException &fioex) {
-        std::cerr << "I/O error while reading file." << std::endl;
+        PLOG_ERROR << "I/O error while reading file." << std::endl;
         return(EXIT_FAILURE);
     } catch (const libconfig::ParseException &pex) {
-        std::cerr << "Parse error at " << pex.getFile() << ":" << pex.getLine()
+        PLOG_ERROR << "Parse error at " << pex.getFile() << ":" << pex.getLine()
              << " - " << pex.getError() << std::endl;
         return(EXIT_FAILURE);
     }
@@ -111,7 +111,7 @@ int getSettings(struct projectCfg *_con,const char *_path) {
         }
         success = 1;
     }catch (const libconfig::SettingNotFoundException &nfex) {
-        /* Settings not found !*/
+        PLOG_FATAL << "Settings not found!";
     }
 
     return success;

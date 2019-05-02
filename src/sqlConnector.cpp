@@ -5,11 +5,7 @@
 *   Author: Ivan Moreno
 *     April 2019
 */
-#include <stdio.h>
-#include <stdlib.h>
-#include <iostream>
-#include <string.h>
-
+#include "plog/Log.h"
 #include "sqlConnector.h"
 
 sqlConnector::sqlConnector() {
@@ -53,11 +49,11 @@ void sqlConnector::connect() {
       stmt = con->createStatement();    
     } catch(sql::SQLException &e ) {
       /* manage errors*/
-      std::cerr << "# ERR: SQLException in " << __FILE__;
-      std::cerr << "( << __FUNCTION__ << ) on line >>" << __LINE__ << std::endl;
-      std::cerr << "# ERR: " << e.what();
-      std::cerr << " (MySQL error code: " << e.getErrorCode();
-      std::cerr << ", SQLState: " << e.getSQLState() << " )" << std::endl;
+      PLOG_ERROR << "# ERR: SQLException in " << __FILE__;
+      PLOG_ERROR << "( << __FUNCTION__ << ) on line >>" << __LINE__ << std::endl;
+      PLOG_ERROR << "# ERR: " << e.what();
+      PLOG_ERROR << " (MySQL error code: " << e.getErrorCode();
+      PLOG_ERROR << ", SQLState: " << e.getSQLState() << " )" << std::endl;
     }
 }
 void sqlConnector::excecuteQuery(char * query_str) {
@@ -66,11 +62,11 @@ void sqlConnector::excecuteQuery(char * query_str) {
     stmt->execute(query_str);
   } catch(sql::SQLException &e) {
     /* manage errors*/
-    std::cerr << "# ERR: SQLException in " << __FILE__;
-    std::cerr << "( << __FUNCTION__ << ) on line >>" << __LINE__ << std::endl;
-    std::cerr << "# ERR: " << e.what();
-    std::cerr << " (MySQL error code: " << e.getErrorCode();
-    std::cerr << ", SQLState: " << e.getSQLState() << " )" << std::endl;
+    PLOG_ERROR << "# ERR: SQLException in " << __FILE__;
+    PLOG_ERROR << "( << __FUNCTION__ << ) on line >>" << __LINE__ << std::endl;
+    PLOG_ERROR << "# ERR: " << e.what();
+    PLOG_ERROR << " (MySQL error code: " << e.getErrorCode();
+    PLOG_ERROR << ", SQLState: " << e.getSQLState() << " )" << std::endl;
   }
 }
 void sqlConnector::insert_in_GAS_INFO(struct db_info *val) {

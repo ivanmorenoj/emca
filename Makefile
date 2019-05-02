@@ -18,6 +18,8 @@ REMOTE_HOST = 192.168.1.15
 REMOTE_DIR	= ~/emca_gases/
 REMOTE_WAN	= ivan28823.sytes.net
 
+# config file
+CFG_FILE = mainConfig.cfg
 # code lists #
 # Find all source files in the source directory, sorted by
 # most recently modified
@@ -81,6 +83,11 @@ $(BUILD_PATH)/%.o: $(SRC_PATH)/%.$(SRC_EXT)
 install: dirs $(BIN_PATH)/$(BIN_NAME)
 	@echo "[LOG] Installing on /usr/bin/$(BIN_NAME)" 
 	@sudo cp $(BIN_PATH)/$(BIN_NAME) /usr/bin/
+	@echo "[LOG] copy $(CFG_FILE) on /etc/emca/" 
+	@sudo mkdir -p /etc/emca/
+	@sudo mkdir -p /var/log/emca/
+	@sudo cp $(CFG_FILE) /etc/emca/ 
+	@echo "[LOG] creating /var/log/emca/ where is saved logfile" 
 
 # Copy all project to remote host, you have to fill remote variables
 # this way is easier than type a scp command each time to copy the dev

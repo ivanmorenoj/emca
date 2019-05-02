@@ -5,11 +5,11 @@
 #include <unistd.h>
 #include <sys/ioctl.h>
 #include <linux/i2c-dev.h>
+#include "plog/Log.h"
 
 //#include <string.h>
 //#include <wiringPiI2C.h>
 #include "MCP3424.h"
-
 
 MCP3424::MCP3424() {
     _conf = NULL;
@@ -28,10 +28,10 @@ MCP3424::~MCP3424() {
 void MCP3424::openI2C() {
     _fd = open("/dev/i2c-1",O_RDWR);
     if (_fd < 0) {
-        printf("Failed to open i2c port\n");
+        PLOG_FATAL << "Failed to open i2c port";
     }
     if (ioctl(_fd,I2C_SLAVE,_conf->address) < 0){
-        printf("Failed set i2c port for read\n");
+        PLOG_FATAL << "Failed set i2c port for read";
     }
 }
 void MCP3424::closeI2C() {
@@ -40,12 +40,12 @@ void MCP3424::closeI2C() {
 }
 void MCP3424::writeConfig() {
     if (write(_fd,&_config,1) != 1){
-        printf("Failed to write i2c \n");
+        PLOG_FATAL << "Failed to write i2c";
     }
 }
 uint8_t MCP3424::readConfig() {
     if (read(_fd ,_rBuff ,4) < 0) {
-        printf("Failed to read i2c \n");
+        PLOG_FATAL << "Failed to read i2c \n";
     }
 
     if (_conf->bitrate == 18)
@@ -58,7 +58,7 @@ void MCP3424::openI2C() {
     if (_fd > 0){
         _fd = wiringPiI2CSetup(_conf->address);
         if (_fd < 0 ) {
-            printf("Error in open fd\n");
+            PLOG_FATAL << ("Error in open fd\n");
         }
     }
 }
@@ -71,7 +71,7 @@ uint8_t MCP3424::readConfig() {
     
     wiringPiI2CRead(_fd);
     if (read(_fd ,_rBuff ,4) < 0) {
-        printf("Error in read\n");
+        PLOG_FATAL << ("Error in read\n");
     }
 
     if (_conf->bitrate == 18)
@@ -100,7 +100,7 @@ uint32_t MCP3424::readRaw() {
     openI2C();
 
     _config |= 128;
-    //printf("actual config : 0x%X\n",_config);
+    //PLOG_FATAL << ("actual config : 0x%X\n",_config);
 
     writeConfig();
     

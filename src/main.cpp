@@ -2,6 +2,7 @@
 #include <time.h>
 #include <string.h>
 
+#include "plog/Log.h"
 #include "commonConfig.h"
 #include "MCP3424.h"
 #include "bme280.h"
@@ -13,8 +14,13 @@
 #include "CircularList.cpp"
 #include "cfgSettings.h"
 
-#define CFG_PATH    "/home/dev/emca_gases/mainConfig.cfg"
-
+#ifdef INSTALL
+    #define CFG_PATH    "/etc/emca/config.cfg"
+    #define LOG_PATH    "/var/log/emca/emca.log"
+#else
+    #define CFG_PATH    "/home/dev/emca_gases/mainConfig.cfg"
+    #define LOG_PATH    "/home/dev/emca_gases/emca.log"
+#endif 
 /**
  *  adjustFunction for alphasense sensor
 */
@@ -24,16 +30,11 @@ double adjust(double vi,unsigned char opt){
 
 int main(int argc, char const *argv[])
 {   
-    time_t rawtime;
-    struct tm * timeinfo;
-    char _tBuff[80];
-
-    time (&rawtime);
-    timeinfo = localtime (&rawtime);
-    strftime (_tBuff,80,"%x-%X",timeinfo);
-
-    printf("[%s] Init program PID = %d\n",_tBuff,(int)getpid());
+    plog::init(plog::debug, LOG_PATH, 10000, 3); // Initialize the logger.
     
+    printf("[+] Init program PID = %d\n\tConf file in \'%s\'\n\tLog file in \'%s\'\n",
+                (int)getpid(),CFG_PATH,LOG_PATH);
+    PLOG_INFO << "\n\nInit program";
     /* DataBase structs*/
     struct ambVariables _ab;
     struct db_info _info;
@@ -44,11 +45,11 @@ int main(int argc, char const *argv[])
     /* General Config */
     struct projectCfg mainCfg = {0};
     if (getSettings(&mainCfg,CFG_PATH)){
-        printf("[+] Get config\n");
-        printSettings(&mainCfg);
+        PLOG_INFO << "Get config";
+        //printSettings(&mainCfg);
     }
     else {
-        printf("[-] Culdn't get config\n");
+        PLOG_ERROR << "Culdn't get config";
         return 0;
     } 
 
@@ -96,7 +97,7 @@ int main(int argc, char const *argv[])
     
     /* connect to database */
     _db.connect();
-    printf("[+] Init inisertions to database\n");
+    PLOG_INFO << "Init inisertions to database";
 
     /*printf("Testing adc's\n");
     for (int i = 0; i < 7; i++) {
@@ -107,8 +108,6 @@ int main(int argc, char const *argv[])
         _ab.temp = _amb.getTemperature();
         _ab.pre = _amb.getPressure();
         _ab.hum = _amb.getHumidity();
-
-        //printf("TEMP\t: %f\nPRES\t: %f\nHUM\t: %f\n",_ab.temp,_ab.pre,_ab.hum);
 
         for(int i = 0; i < 4 ; ++i) {        
             _info.gasType = _mp.getCurrentData()->getGasSensor()->getSensorName();

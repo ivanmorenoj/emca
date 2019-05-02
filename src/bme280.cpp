@@ -6,6 +6,7 @@
 #include <wiringPiI2C.h>
 #include <stdint.h>
 #include <unistd.h>
+#include "plog/Log.h"
 
 bme280::bme280(){
     _fd = -1;
@@ -13,7 +14,7 @@ bme280::bme280(){
 bme280::bme280(int bme280_addr){
     _fd = wiringPiI2CSetup(bme280_addr);
     if(_fd < 0) {    //if the divece is found
-        printf("Device not found");
+        PLOG_ERROR << "Device not found";
     }
 }
 bme280::~bme280(){
@@ -24,7 +25,7 @@ bme280::~bme280(){
 void bme280::setAddress(int bme280_addr){
     _fd = wiringPiI2CSetup(bme280_addr);
     if(_fd < 0) {    //if the divece is found
-        printf("Device not found");
+        PLOG_ERROR << "Device not found";
     }
 }
 int32_t bme280::getTemperatureCalibration(int32_t adc_T){
