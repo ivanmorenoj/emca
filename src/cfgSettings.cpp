@@ -3,23 +3,41 @@
 #include <cstdlib>
 #include <libconfig.h++>
 #include <cstring>
+#include <time.h>
 #include "plog/Log.h"
 #include "cfgSettings.h"
 
+static time_t strToTime(const char *_inputStr) {
+    //static const char *_format = "%d/%m/%Y";
+    struct tm _st = {0};
+    time_t _rawtime;
+    if (strptime(_inputStr,"%d/%m/%Y",&_st) == NULL){
+        PLOG_ERROR << "Error in parsing time";
+    }
+    _rawtime = mktime(&_st);
+    return _rawtime;
+}
+static std::string timeToString(time_t _currenttime) {
+    struct tm *_st;
+    char _buff[80];
+    _st = localtime(&_currenttime);
+    strftime(_buff,sizeof(_buff),"%d/%m/%Y",_st);
+    return std::string(_buff);
+}
 int getSettings(struct projectCfg *_con,const char *_path) {
     int success = 0;
-    
+    std::string _tmpStr;    
     libconfig::Config cfg;
     
     try {
         cfg.readFile(_path);
     } catch (const libconfig::FileIOException &fioex) {
         PLOG_ERROR << "I/O error while reading file." << std::endl;
-        return(EXIT_FAILURE);
+        exit(EXIT_FAILURE);
     } catch (const libconfig::ParseException &pex) {
         PLOG_ERROR << "Parse error at " << pex.getFile() << ":" << pex.getLine()
              << " - " << pex.getError() << std::endl;
-        return(EXIT_FAILURE);
+        exit(EXIT_FAILURE);
     }
 
     const libconfig::Setting &root = cfg.getRoot();
@@ -78,7 +96,11 @@ int getSettings(struct projectCfg *_con,const char *_path) {
             const libconfig::Setting &_op = _alph["Operation"];
 
             _con->_gas[i].cond.lifeTime = (int)_op["lifetime"];
-            _con->_gas[i].cond.startupTime = (int)_op["startuptime"];
+            _con->_gas[i].cond.lifeTime *= 86400;
+            //_con->_gas[i].cond.startupTime = (int)_op["startuptime"];
+            _op.lookupValue("startuptime",_tmpStr);
+            _con->_gas[i].cond.startupTime = (int) strToTime(_tmpStr.c_str());
+
             for(int k = 0; k < 2 ; ++k){
                 _con->_gas[i].cond.temperature[k] = _op["temperature"][k];
                 _con->_gas[i].cond.pressure[k] = _op["pressure"][k];
@@ -102,7 +124,10 @@ int getSettings(struct projectCfg *_con,const char *_path) {
         const libconfig::Setting &_op_a = _aq["Operation"];
 
         _con->_o3gas.cond.lifeTime = (int)_op_a["lifetime"];
-        _con->_o3gas.cond.startupTime = (int)_op_a["startuptime"];        
+        _con->_o3gas.cond.lifeTime *= 86400; 
+        //_con->_o3gas.cond.startupTime = (int)_op_a["startuptime"];        
+        _op_a.lookupValue("startuptime",_tmpStr);
+        _con->_o3gas.cond.startupTime = (int) strToTime(_tmpStr.c_str());
         for(int k = 0; k < 2 ; ++k){
             _con->_o3gas.cond.temperature[k] = _op_a["temperature"][k];
             _con->_o3gas.cond.pressure[k] = _op_a["pressure"][k];
@@ -112,6 +137,10 @@ int getSettings(struct projectCfg *_con,const char *_path) {
         success = 1;
     }catch (const libconfig::SettingNotFoundException &nfex) {
         PLOG_FATAL << "Settings not found!";
+        exit(EXIT_FAILURE);
+    }catch (const libconfig::SettingTypeException &ste) {
+        PLOG_FATAL << "Settings Type exception on " << ste.what();
+        exit(EXIT_FAILURE);        
     }
 
     return success;
@@ -149,8 +178,8 @@ void printSettings(struct projectCfg *_cfg){
                       << "\n\tchannel:\t" << (int)_cfg->_gas[i].adc[j].channel << std::endl;
         }
         std::cout << "\nRanges " << "[" << i + 1<< "]"
-                  << "\n\tlifetime:\t" << (int)_cfg->_gas[i].cond.lifeTime
-                  << "\n\tstartuptime:\t" << (int)_cfg->_gas[i].cond.startupTime
+                  << "\n\tlifetime:\t" << timeToString((time_t)(_cfg->_gas[i].cond.startupTime + _cfg->_gas[i].cond.lifeTime))
+                  << "\n\tstartuptime:\t" << timeToString((time_t)_cfg->_gas[i].cond.startupTime)
                   << "\n\ttemperature:\t" << _cfg->_gas[i].cond.temperature[0]
                   << "\t" << _cfg->_gas[i].cond.temperature[1] 
                   << "\n\tpressure:\t" << _cfg->_gas[i].cond.pressure[0]
@@ -169,8 +198,8 @@ void printSettings(struct projectCfg *_cfg){
               << "\n\tchannel:\t" << (int)_cfg->_o3gas.adc.channel << std::endl;
     
     std::cout << "\nRanges aeroqual "
-              << "\n\tlifetime:\t" << _cfg->_o3gas.cond.lifeTime
-              << "\n\tstartuptime:\t" << _cfg->_o3gas.cond.startupTime
+              << "\n\tlifetime:\t" << timeToString((time_t)(_cfg->_o3gas.cond.startupTime + _cfg->_o3gas.cond.lifeTime))
+              << "\n\tstartuptime:\t" << timeToString((time_t)_cfg->_o3gas.cond.startupTime)
               << "\n\ttemperature:\t" << _cfg->_o3gas.cond.temperature[0]
               << "\t" << _cfg->_o3gas.cond.temperature[1] 
               << "\n\tpressure:\t" << _cfg->_o3gas.cond.pressure[0]
