@@ -26,7 +26,7 @@ const char *flagManager::getFlag() {
      *  -IC:  Invalido por calibracion 
      *  -IR:  Invalido por rango de operacion
      *  -VZ:  Valido igualado a cero o al limite de deteccion
-     *  ND:  No disponible
+     *  -ND:  No disponible
      *  -IF:  Invalido por falla del equipo de monitoreo
      */
     uint8_t ambient_f   = checkAmbientConditions();

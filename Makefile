@@ -17,6 +17,7 @@ REMOTE_USER = dev
 REMOTE_HOST = 192.168.1.15
 REMOTE_DIR	= ~/emca_gases/
 REMOTE_WAN	= ivan28823.sytes.net
+WAN_PORT	= 9797
 
 # config file
 CFG_FILE 		= mainConfig.cfg
@@ -99,7 +100,7 @@ install: dirs $(BIN_PATH)/$(BIN_NAME)
 # project to production on raspberry pi board
 internet_copy:	
 	@echo "[LOG] Copying project to remote host: $(REMOTE_USER)@$(REMOTE_HOST):$(REMOTE_DIR)"
-	@scp -P 9797 -r * $(REMOTE_USER)@$(REMOTE_HOST):$(REMOTE_DIR) 
+	@scp -P $(WAN_PORT) -r * $(REMOTE_USER)@$(REMOTE_HOST):$(REMOTE_DIR) 
 
 # Over lan network
 remote_copy:

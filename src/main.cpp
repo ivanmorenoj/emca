@@ -16,7 +16,7 @@
 
 #define EVER    ;;    
 
-//#define INSTALL
+#define INSTALL
 #ifdef INSTALL
     #define CFG_PATH    "/etc/emca/config.cfg"
     #define LOG_PATH    "/var/log/emca/emca.log"
@@ -26,7 +26,7 @@
 #endif 
 /**
  *  adjustFunction for alphasense sensor
-*/
+ */
 double adjust(double vi,unsigned char opt){
     return  2.488132904 * vi;
 }
@@ -35,9 +35,10 @@ int main(int argc, char const *argv[])
 {   
     plog::init(plog::debug, LOG_PATH, 1000000, 3); // Initialize the logger. 1MB
     
-    printf("[+] Init program PID = %d\n  Config file in \'%s\'\n  Log file in \'%s\'\n",
+    printf("<5>[+] Init program PID = %d\n  Config file in \'%s\'\n  Log file in \'%s\'\n",
                 (int)getpid(),CFG_PATH,LOG_PATH);
-    PLOG_INFO << "\n\nInit program";
+
+    PLOG_INFO << "\n>>>>>>>>>>>>>>>>>Init program [" << (int)getpid() << "] <<<<<<<<<<<<<<<<<<<<";
     /* DataBase structs*/
     struct ambVariables _ab;
     struct db_info _info;
@@ -48,14 +49,13 @@ int main(int argc, char const *argv[])
     /* General Config */
     struct projectCfg mainCfg = {0};
     if (getSettings(&mainCfg,CFG_PATH)){
-        PLOG_INFO << "Get config";
+        PLOG_INFO << "Load config";
         //printSettings(&mainCfg);
     }
     else {
         PLOG_ERROR << "Culdn't get config";
         return 0;
     } 
-
 
     /* initializing ambiental sensor */
     bme280 _amb(mainCfg.bme280Address);
@@ -98,15 +98,15 @@ int main(int argc, char const *argv[])
     for(int i = 0; i < 4 ; ++i)
         _mp.addNode(&_fm[i]);
     
+    /* Restore time after init sensor */
+    PLOG_INFO << "Wait for [" << mainCfg._tm.restore << "] seconds";
+    for(int t = 0; t < mainCfg._tm.restore ; ++t)
+        sleep(1);
+
     /* connect to database */
     _db.connect();
     PLOG_INFO << "Init inisertions to database";
 
-    /*printf("Testing adc's\n");
-    for (int i = 0; i < 7; i++) {
-        printf("Voltage adc[%d]: %.6f\n",i,_adc[i].getVoltage());
-    }*/
-    
     for(EVER) {
         _ab.temp = _amb.getTemperature();
         _ab.pre = _amb.getPressure();

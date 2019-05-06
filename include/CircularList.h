@@ -7,8 +7,8 @@ template <class Type>
 struct Node {
     Type *data;
     Node *next;
-    Node():next(NULL),data(NULL){ /*Nothing*/ }
-    Node(Type *d): next(NULL), data(d){/*Nothing*/}
+    Node():data(NULL),next(NULL){ /*Nothing*/ }
+    Node(Type *d): data(NULL),next(NULL){/*Nothing*/}
 };
 
 template <class Type>
