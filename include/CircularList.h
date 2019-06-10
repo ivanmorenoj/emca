@@ -9,6 +9,7 @@ struct Node {
     Node *next;
     Node():data(NULL),next(NULL){ /*Nothing*/ }
     Node(Type *d): data(d),next(NULL){/*Nothing*/}
+    ~Node() {delete data;}
 };
 
 template <class Type>
