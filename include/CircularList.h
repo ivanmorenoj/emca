@@ -8,7 +8,7 @@ struct Node {
     Type *data;
     Node *next;
     Node():data(NULL),next(NULL){ /*Nothing*/ }
-    Node(Type *d): data(NULL),next(NULL){/*Nothing*/}
+    Node(Type *d): data(d),next(NULL){/*Nothing*/}
 };
 
 template <class Type>
