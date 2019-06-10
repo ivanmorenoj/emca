@@ -53,6 +53,6 @@ flagmanager: testFlagManager.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDE) $(LIBS) $(SRC_DIR)/AlphasenseSensor.cpp $(SRC_DIR)/MCP3424.cpp $(SRC_DIR)/bme280.cpp $(SRC_DIR)/flagManager.cpp $< -o bin/$@
 
 clean:
-	rm bin/*
+	rm -r bin/
 
 

@@ -35,7 +35,7 @@ int main(int argc, char const *argv[])
 {   
     plog::init(plog::debug, LOG_PATH, 1000000, 3); // Initialize the logger. 1MB
     
-    printf("<5>[+] Init program PID = %d\n  Config file in \'%s\'\n  Log file in \'%s\'\n",
+    printf("[+] Init program PID = %d\n  Config file in \'%s\'\n  Log file in \'%s\'\n",
                 (int)getpid(),CFG_PATH,LOG_PATH);
 
     PLOG_INFO << "\n>>>>>>>>>>>>>>>>>Init program [" << (int)getpid() << "] <<<<<<<<<<<<<<<<<<<<";

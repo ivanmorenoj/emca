@@ -7,8 +7,6 @@
 #include <linux/i2c-dev.h>
 #include "plog/Log.h"
 
-//#include <string.h>
-//#include <wiringPiI2C.h>
 #include "MCP3424.h"
 
 MCP3424::MCP3424() {
@@ -53,37 +51,6 @@ uint8_t MCP3424::readConfig() {
     else 
         return _rBuff[2];
 }
-/*
-void MCP3424::openI2C() {
-    if (_fd > 0){
-        _fd = wiringPiI2CSetup(_conf->address);
-        if (_fd < 0 ) {
-            PLOG_FATAL << ("Error in open fd\n");
-        }
-    }
-}
-void MCP3424::closeI2C() {
-    close(_fd);
-    _fd = -1;
-}
-uint8_t MCP3424::readConfig() {
-    memset(_rBuff,0,sizeof(_rBuff));
-    
-    wiringPiI2CRead(_fd);
-    if (read(_fd ,_rBuff ,4) < 0) {
-        PLOG_FATAL << ("Error in read\n");
-    }
-
-    if (_conf->bitrate == 18)
-        return _rBuff[3];
-    else 
-        return _rBuff[2];
-}
-void MCP3424::writeConfig() {
-    wiringPiI2CWrite(_fd,_config);
-
-    for (uint8_t i = 0; (i < 10) && (_config != readConfig()) ; ++i);
-}*/
 MCP3424Config *MCP3424::getConfig() {
     return _conf;
 }
@@ -100,7 +67,6 @@ uint32_t MCP3424::readRaw() {
     openI2C();
 
     _config |= 128;
-    //PLOG_FATAL << ("actual config : 0x%X\n",_config);
 
     writeConfig();
     
