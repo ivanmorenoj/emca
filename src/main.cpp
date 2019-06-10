@@ -80,11 +80,11 @@ int main(int argc, char const *argv[])
     aeroqualSM50 _o3gas;
     _o3gas.setConfigValues(&_amb,&_adc[6]);
     
-    /* initializing flag manager*/
-    flagManager _fm[4];
+    /* add sensors to main process */
+    CircularList<flagManager> _mp;
     for(int i = 0; i < 3 ; ++i)
-        _fm[i].setConfig(&mainCfg._gas[i].cond,&_amb,&_gasS[i]);
-    _fm[3].setConfig(&mainCfg._o3gas.cond,&_amb,&_o3gas);
+        _mp.addNode(new flagManager(&mainCfg._gas[i].cond,&_amb,&_gasS[i]));
+    _mp.addNode(new flagManager(&mainCfg._o3gas.cond,&_amb,&_o3gas));
     
     /* initializing database */
     sqlConnector _db;
@@ -92,12 +92,7 @@ int main(int argc, char const *argv[])
     _db.setPassword(mainCfg._sql.pass);
     _db.setHost(mainCfg._sql.host);
     _db.setSchema(mainCfg._sql.schema);
-    
-    /* add sensors to main process */
-    CircularList<flagManager> _mp;
-    for(int i = 0; i < 4 ; ++i)
-        _mp.addNode(&_fm[i]);
-    
+        
     /* Restore time after init sensor */
     PLOG_INFO << "Wait for [" << mainCfg._tm.restore << "] seconds";
     for(int t = 0; t < mainCfg._tm.restore ; ++t)
