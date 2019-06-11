@@ -98,14 +98,14 @@ struct db_values{
 };
 
 struct alphasenseCfg{
-    struct alphasenseConfig gas;
-    struct MCP3424Config adc[2];
-    struct operatingConditions cond;
+    struct alphasenseConfig     gas;
+    struct MCP3424Config        adc[2];
+    struct operatingConditions  cond;
 };
 
 struct aeroqualCfg{
-    struct MCP3424Config adc;
-    struct operatingConditions cond;
+    struct MCP3424Config        adc;
+    struct operatingConditions  cond;
 };
 
 struct dbCfg {
@@ -122,8 +122,8 @@ struct timeCfg {
 
 struct projectCfg {
   int bme280Address;
-  struct timeCfg _tm;
-  struct dbCfg _sql;
+  struct timeCfg        _tm;
+  struct dbCfg          _sql;
   struct alphasenseCfg  _gas[3];
   struct aeroqualCfg    _o3gas;
 };

@@ -70,13 +70,15 @@ void sqlConnector::excecuteQuery(char * query_str) {
   }
 }
 void sqlConnector::insert_in_GAS_INFO(struct db_info *val) {
-  static const char *query = "INSERT INTO GAS_INFO VALUES(NULL,CURRENT_TIMESTAMP,\"%s\",%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f);";
+  static const char *query = 
+    "INSERT INTO GAS_INFO VALUES(NULL,CURRENT_TIMESTAMP,\"%s\",%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f);";
   memset(buff,0,sizeof(buff));
   sprintf(buff,query,val->gasType,val->amb->temp,val->amb->hum,val->amb->pre,val->we,val->ae,val->ppb,val->ppb_c);
   excecuteQuery(buff);
 }
 void sqlConnector::insert_in_GAS_VALUES(struct db_values *val) {
-  static const char *query = "INSERT INTO GAS_VALUES VALUES(NULL,CURRENT_TIMESTAMP,%.5f,%.5f,%.5f,%.5f,\"%s\",%.5f,\"%s\",%.5f,\"%s\",%.5f,\"%s\");";
+  static const char *query = 
+    "INSERT INTO GAS_VALUES VALUES(NULL,CURRENT_TIMESTAMP,%.5f,%.5f,%.5f,%.5f,\"%s\",%.5f,\"%s\",%.5f,\"%s\",%.5f,\"%s\");";
   memset(buff,0,sizeof(buff));
   sprintf(buff,query,val->amb->temp,val->amb->pre,val->amb->hum,val->gas[0].ppb,val->gas[0].flag,
           val->gas[1].ppb,val->gas[1].flag,val->gas[2].ppb,val->gas[2].flag,val->gas[3].ppb,val->gas[3].flag);

@@ -35,8 +35,6 @@
  *            1  0 = x4
  *            1  1 = x8
  * Default value after power on reset :     1 0 0 1 0 0 0 0 = 0x90 
- *  X0011100
- *  1C
  */
 
 class MCP3424: public adcSensor{

@@ -85,11 +85,11 @@ int getSettings(struct projectCfg *_con,const char *_path) {
             const libconfig::Setting &_adc = _alph["Adc"];
             for (int j = 0; j < _adc.getLength() ; ++j) {
                 const libconfig::Setting &_ad = _adc[j];
-                _con->_gas[i].adc[j].address = (uint8_t)(int)_ad.lookup("address");
-                _con->_gas[i].adc[j].bitrate  = (uint8_t)(int)_ad.lookup("bitrate");
-                _con->_gas[i].adc[j].gain  = (uint8_t)(int)_ad.lookup("pga");
+                _con->_gas[i].adc[j].address    = (uint8_t)(int)_ad.lookup("address");
+                _con->_gas[i].adc[j].bitrate    = (uint8_t)(int)_ad.lookup("bitrate");
+                _con->_gas[i].adc[j].gain       = (uint8_t)(int)_ad.lookup("pga");
                 _con->_gas[i].adc[j].conv_mode  = (uint8_t)(int)_ad.lookup("convmode");
-                _con->_gas[i].adc[j].channel  = (uint8_t)(int)_ad.lookup("channel");
+                _con->_gas[i].adc[j].channel    = (uint8_t)(int)_ad.lookup("channel");
             }
 
             /* lookup operation settings */
@@ -103,9 +103,9 @@ int getSettings(struct projectCfg *_con,const char *_path) {
 
             for(int k = 0; k < 2 ; ++k){
                 _con->_gas[i].cond.temperature[k] = _op["temperature"][k];
-                _con->_gas[i].cond.pressure[k] = _op["pressure"][k];
-                _con->_gas[i].cond.humidity[k] = _op["humidity"][k];
-                _con->_gas[i].cond.ranges[k] = _op["ranges"][k];
+                _con->_gas[i].cond.pressure[k]    = _op["pressure"][k];
+                _con->_gas[i].cond.humidity[k]    = _op["humidity"][k];
+                _con->_gas[i].cond.ranges[k]      = _op["ranges"][k];
             }
         }
         
@@ -114,11 +114,11 @@ int getSettings(struct projectCfg *_con,const char *_path) {
         
         /* lookup adc settings*/
         const libconfig::Setting &_aq_ad = _aq["Adc"];
-        _con->_o3gas.adc.address = (uint8_t)(int)_aq_ad.lookup("address");
-        _con->_o3gas.adc.bitrate  = (uint8_t)(int)_aq_ad.lookup("bitrate");
-        _con->_o3gas.adc.gain  = (uint8_t)(int)_aq_ad.lookup("pga");
-        _con->_o3gas.adc.conv_mode  = (uint8_t)(int)_aq_ad.lookup("convmode");
-        _con->_o3gas.adc.channel  = (uint8_t)(int)_aq_ad.lookup("channel");
+        _con->_o3gas.adc.address   = (uint8_t)(int)_aq_ad.lookup("address");
+        _con->_o3gas.adc.bitrate   = (uint8_t)(int)_aq_ad.lookup("bitrate");
+        _con->_o3gas.adc.gain      = (uint8_t)(int)_aq_ad.lookup("pga");
+        _con->_o3gas.adc.conv_mode = (uint8_t)(int)_aq_ad.lookup("convmode");
+        _con->_o3gas.adc.channel   = (uint8_t)(int)_aq_ad.lookup("channel");
 
         /* lookup operation settings */
         const libconfig::Setting &_op_a = _aq["Operation"];
@@ -130,9 +130,9 @@ int getSettings(struct projectCfg *_con,const char *_path) {
         _con->_o3gas.cond.startupTime = (int) strToTime(_tmpStr.c_str());
         for(int k = 0; k < 2 ; ++k){
             _con->_o3gas.cond.temperature[k] = _op_a["temperature"][k];
-            _con->_o3gas.cond.pressure[k] = _op_a["pressure"][k];
-            _con->_o3gas.cond.humidity[k] = _op_a["humidity"][k];
-            _con->_o3gas.cond.ranges[k] = _op_a["ranges"][k];
+            _con->_o3gas.cond.pressure[k]    = _op_a["pressure"][k];
+            _con->_o3gas.cond.humidity[k]    = _op_a["humidity"][k];
+            _con->_o3gas.cond.ranges[k]      = _op_a["ranges"][k];
         }
         success = 1;
     }catch (const libconfig::SettingNotFoundException &nfex) {

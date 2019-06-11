@@ -14,7 +14,8 @@ AlphasenseSensor::AlphasenseSensor(){
   ambiental = NULL;
   we_adc = ae_adc = NULL;
 }
-AlphasenseSensor::AlphasenseSensor(SensorType St,CompensateType Ct,char Alg,float we_e,float we_t,float ae_e,float ae_t,float sen){
+AlphasenseSensor::AlphasenseSensor(SensorType St,CompensateType Ct,
+          char Alg,float we_e,float we_t,float ae_e,float ae_t,float sen){
   // set the sensor features specifies in bag
   set_features(St,Ct,Alg,we_e,we_t,ae_e,ae_t,sen);
   ambiental = NULL;
@@ -24,7 +25,8 @@ AlphasenseSensor::AlphasenseSensor(SensorType St,CompensateType Ct,char Alg,floa
 AlphasenseSensor::~AlphasenseSensor(){
 
 }
-void AlphasenseSensor::set_features(SensorType St,CompensateType Ct,char Alg,float we_e,float we_t,float ae_e,float ae_t,float sen){
+void AlphasenseSensor::set_features(SensorType St,CompensateType Ct,
+          char Alg,float we_e,float we_t,float ae_e,float ae_t,float sen){
   Type_sensor = St;
   Type_compensate = Ct;
   // limiting the values of algorithm
@@ -96,7 +98,8 @@ char * AlphasenseSensor::get_sensor_name(){
   }
   return ptr;
 } 
-AlphasenseSensor::AlphasenseSensor(alphasenseConfig conf,ambientSensor *amb,adcSensor *ad_we,adcSensor *ad_ae){
+AlphasenseSensor::AlphasenseSensor(alphasenseConfig conf,ambientSensor *amb,
+                                    adcSensor *ad_we,adcSensor *ad_ae){
   setConfigValues(conf,amb,ad_we,ad_ae);
 }
 float AlphasenseSensor::getConcentration(char pp,char typeC){
@@ -128,7 +131,9 @@ float AlphasenseSensor::getConcentration(char pp,char typeC){
 
   return concentration;
 }
-void AlphasenseSensor::setConfigValues(alphasenseConfig cnf,ambientSensor *amb,adcSensor *ad_we,adcSensor *ad_ae){
+void AlphasenseSensor::setConfigValues(alphasenseConfig cnf,
+                      ambientSensor *amb,adcSensor *ad_we,adcSensor *ad_ae){
+
   set_features(cnf.sensor,cnf.compensate,cnf.algorithm,cnf.we_electronic,
                cnf.we_total,cnf.ae_electronic,cnf.ae_total,cnf.sensitivity);
   ambiental = amb;
