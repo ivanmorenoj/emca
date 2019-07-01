@@ -174,15 +174,15 @@ double MCP3424::readVoltage() {
 
 	switch (_conf->bitrate) {
 	case 12:
-		lsb = 0.0005;   break;
+		lsb = 0.0005;       break;
 	case 14:
-		lsb = 0.000125; break;
+		lsb = 0.000125;     break;
 	case 16:
 		lsb = 0.00003125;   break;
 	case 18:
 		lsb = 0.0000078125; break;
 	default:
-		return (9999);  break;
+		return (9999);
 	}
 
     if (_sign == 1)
