@@ -1,4 +1,5 @@
 .vscode/
 build/
 test/bin/
-emcaMariadbLibs.tar
+emca
+qemu-arm-static
