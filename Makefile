@@ -120,3 +120,4 @@ build_arm:
 			-v $(shell pwd):/workdir  \
 			ivan28823/emcaworkspace \
 			bash -c "cd /workdir && make"
+	@sudo chown -R $(USER) *
