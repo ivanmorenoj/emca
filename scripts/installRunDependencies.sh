@@ -1,21 +1,25 @@
 #!/bin/bash
 
-#need root privilege
-
+# db user, pass and dbname
 DB_USER="insert_user"
 DB_PASS="inserp@ss"
 DB_NAME="EMCA"
 
+# load sql scripts
+SQL_SCRIPTS=$(find ../ -name "*.sql")
+
 #update repo
 apt-get update
 
-#upgrade
+#upgrade repos
 apt-get -y upgrade
 
-#install mariadb server
-apt-get install -y mariadb-server
-
-SQL_SCRIPTS=$(find ../ -name "*.sql")
+#install packages to run 
+apt-get install -y \
+    libconfig++-dev \
+    libmysqlcppconn-dev \
+    wiringpi \
+    mariadb-server
 
 echo "Creating database $DB_NAME ."
 mysql -e "CREATE DATABASE $DB_NAME /*!40100 DEFAULT CHARACTER SET utf8 */;"
@@ -26,6 +30,12 @@ mysql -e "FLUSH PRIVILEGES;"
 
 #creating tables in $DB_NAME
 for script in $SQL_SCRIPTS; do
-    echo "Executing script '$script' ..."
+    echo ">>Executing script '$script' ..."
     mysql $DB_NAME < $script
 done
+
+#clean
+apt-get clean
+
+echo 'Delete /var/lib/apt/lists/* /tmp/* /var/tmp/*' 
+rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

@@ -7,7 +7,14 @@ apt-get update
 apt-get -y upgrade
 
 #install libs to compile 
-apt-get install -y i2c-tools libconfig++-dev libmysqlcppconn-dev libi2c-dev wiringpi  build-essential git-core
+apt-get install -y \
+    libconfig++-dev \
+    libmysqlcppconn-dev \
+    wiringpi \
+    i2c-tools \
+    libi2c-dev \
+    build-essential \
+    git-core
 
 #clean
 apt-get clean
