@@ -13,7 +13,7 @@ BIN_NAME = emca
 SRC_EXT = cpp
 
 # remote host copy #
-REMOTE_USER = dev
+REMOTE_USER = pi
 REMOTE_HOST = 192.168.1.15
 REMOTE_DIR	= ~/emca_gases/
 REMOTE_WAN	= ivan28823.sytes.net
@@ -45,7 +45,7 @@ default_target: release
 .PHONY: release
 release: export CXXFLAGS := $(CXXFLAGS) $(COMPILE_FLAGS)
 release: dirs
-	@$(MAKE) all
+	@$(MAKE) -j$(NPROC) all
 
 .PHONY: dirs
 dirs:
@@ -111,3 +111,13 @@ remote_copy:
 exe:	dirs $(BIN_PATH)/$(BIN_NAME)
 	@echo "[LOG] Excecuting $(BIN_NAME)"
 	@./$(BIN_NAME)
+
+#compile in amd64 for armv7l (raspberry pi 3) using qemu-arm-static
+build_arm:
+	@echo "[LOG] Building in docker container workdir: $(PWD)"
+	@docker run --rm -it \
+			-v /usr/bin/qemu-arm-static:/usr/bin/qemu-arm-static \
+			-v $(PWD):/workdir  \
+			ivan28823/emcaworkspace \
+			bash -c "cd /workdir && make"
+	@sudo chown -R $(USER) *

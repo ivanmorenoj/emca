@@ -1,11 +1,38 @@
-FROM ivan28823/emca:mariadb
+# Author: Ivan Moreno
+#   July 2019
+#
+# to run this image use the next command
+#   docker run --rm -it \
+#       -v /usr/bin/qemu-arm-static:/usr/bin/qemu-arm-static \
+#       -v /path/to/workdir:/workdir \
+#       ivan28823/emcaworkspace \
+#       bash -c "cd /workdir && make clean && make"
 
-RUN apt update && apt -y upgrade
+FROM arm32v7/debian:buster-slim
 
-RUN mkdir -p /etc/emca/
-RUN mkdir -p /var/log/emca/
+# need to install qemu-arm-static in your system
+#   for debian based apt-get install -y --no-install-recommends qemu-user-static
+#   for archlinux based via aur yay -S qemu-user-static
+# then copy /usr/bin/qemu-arch-static to workdir
+COPY qemu-arm-static /usr/bin/qemu-arm-static
 
-COPY build/bin/emca /bin/emca
+RUN apt-get update && apt-get -y upgrade
 
+RUN apt-get install -y \
+    i2c-tools \
+    libconfig++-dev \
+    libmysqlcppconn-dev \
+    libi2c-dev \
+    build-essential \
+    git-core \
+    sudo \
+    file
 
-CMD /usr/sbin/service mysql start && /bin/emca
+# get wiringPi from source
+RUN cd /tmp/ && \
+    git clone git://git.drogon.net/wiringPi && \
+    cd wiringPi && \
+    ./build && cd /root && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+CMD /bin/bash
