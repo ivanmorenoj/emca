@@ -11,7 +11,7 @@ default: release
 .PHONY: release
 release: export CXXFLAGS := $(CXXFLAGS) $(FLAGS)
 release: dirs
-	@$(MAKE) all
+	@$(MAKE) -j$(NPROC) all
 
 .PHONY: all
 all: alphasense bme280 mcp3424 aeroqual libconfig circularlist sqlConnector flagmanager
@@ -55,4 +55,11 @@ flagmanager: testFlagManager.cpp
 clean:
 	rm -r bin/
 
-
+build_arm:
+	@echo "[LOG] Building test in docker container workdir: $(PWD)"
+	@docker run --rm -it \
+			-v /usr/bin/qemu-arm-static:/usr/bin/qemu-arm-static \
+			-v $(shell dirname $(PWD)):/workdir  \
+			ivan28823/emcaworkspace \
+			bash -c "cd /workdir/test && make"
+	@sudo chown -R $(USER) *

@@ -45,7 +45,7 @@ default_target: release
 .PHONY: release
 release: export CXXFLAGS := $(CXXFLAGS) $(COMPILE_FLAGS)
 release: dirs
-	@$(MAKE) -j$(nproc) all
+	@$(MAKE) -j$(NPROC) all
 
 .PHONY: dirs
 dirs:
@@ -114,10 +114,10 @@ exe:	dirs $(BIN_PATH)/$(BIN_NAME)
 
 #compile in amd64 for armv7l (raspberry pi 3) using qemu-arm-static
 build_arm:
-	@echo "[LOG] Building in docker container workdir: $(shell pwd)"
+	@echo "[LOG] Building in docker container workdir: $(PWD)"
 	@docker run --rm -it \
 			-v /usr/bin/qemu-arm-static:/usr/bin/qemu-arm-static \
-			-v $(shell pwd):/workdir  \
+			-v $(PWD):/workdir  \
 			ivan28823/emcaworkspace \
 			bash -c "cd /workdir && make"
 	@sudo chown -R $(USER) *
