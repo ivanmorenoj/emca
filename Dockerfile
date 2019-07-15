@@ -16,9 +16,11 @@ FROM arm32v7/debian:buster-slim
 # then copy /usr/bin/qemu-arch-static to workdir
 COPY qemu-arm-static /usr/bin/qemu-arm-static
 
+#update and upgrade
 RUN apt-get update && apt-get -y upgrade
 
-RUN apt-get install -y \
+# install dependencies
+RUN apt-get install -y --no-install-recommends \
     i2c-tools \
     libconfig++-dev \
     libmysqlcppconn-dev \
