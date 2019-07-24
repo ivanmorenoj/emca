@@ -21,20 +21,30 @@ RUN apt-get update && apt-get -y upgrade
 
 # install dependencies
 RUN apt-get install -y --no-install-recommends \
-    i2c-tools \
     libconfig++-dev \
     libmysqlcppconn-dev \
     libi2c-dev \
-    build-essential \
-    git-core \
-    sudo \
-    file
+    gcc \
+    g++ \
+    make \
+    git \
+    sudo
 
 # get wiringPi from source
 RUN cd /tmp/ && \
     git clone git://git.drogon.net/wiringPi && \
     cd wiringPi && \
-    ./build && cd /root && \
+    ./build && cd /
+
+#clean
+RUN export SUDO_FORCE_REMOVE=yes && \
+    apt-get purge -y git sudo && \
+    apt-get autoremove -y && \
+    apt-get clean -y && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-CMD /bin/bash
+#change workdir
+WORKDIR /workdir
+
+#set entry point
+ENTRYPOINT [ "/usr/bin/make" ]

@@ -117,6 +117,5 @@ build_arm:
 	@echo "[LOG] Building in docker container workdir: $(PWD)"
 	@docker run --rm -it \
 		-v $(PWD):/workdir  \
-		ivan28823/emcaworkspace \
-		bash -c "cd /workdir && make"
+		ivan28823/emcaworkspace
 	@sudo chown -R $(USER) *
