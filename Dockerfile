@@ -3,10 +3,8 @@
 #
 # to run this image use the next command
 #   docker run --rm -it \
-#       -v /usr/bin/qemu-arm-static:/usr/bin/qemu-arm-static \
 #       -v /path/to/workdir:/workdir \
-#       ivan28823/emcaworkspace \
-#       bash -c "cd /workdir && make clean && make"
+#       ivan28823/emcaworkspace 
 
 FROM arm32v7/debian:buster-slim
 
@@ -34,7 +32,10 @@ RUN apt-get install -y --no-install-recommends \
 RUN cd /tmp/ && \
     git clone git://git.drogon.net/wiringPi && \
     cd wiringPi && \
-    ./build && cd /
+    ./build
+
+#change workdir
+WORKDIR /workdir
 
 #clean
 RUN export SUDO_FORCE_REMOVE=yes && \
@@ -42,9 +43,6 @@ RUN export SUDO_FORCE_REMOVE=yes && \
     apt-get autoremove -y && \
     apt-get clean -y && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-#change workdir
-WORKDIR /workdir
 
 #set entry point
 ENTRYPOINT [ "/usr/bin/make" ]

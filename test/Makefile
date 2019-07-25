@@ -58,8 +58,6 @@ clean:
 build_arm:
 	@echo "[LOG] Building test in docker container workdir: $(PWD)"
 	@docker run --rm -it \
-			-v /usr/bin/qemu-arm-static:/usr/bin/qemu-arm-static \
 			-v $(shell dirname $(PWD)):/workdir  \
-			ivan28823/emcaworkspace \
-			bash -c "cd /workdir/test && make"
+			ivan28823/emcaworkspace 
 	@sudo chown -R $(USER) *
