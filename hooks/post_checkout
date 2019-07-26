@@ -1,3 +1,0 @@
-#!/bin/bash
-
-curl -L https://github.com/multiarch/qemu-user-static/releases/download/v4.0.0-5/qemu-arm-static.tar.gz | tar zxvf - -C .
