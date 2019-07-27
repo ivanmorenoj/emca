@@ -118,4 +118,3 @@ build_arm:
 	@docker run --rm -it \
 		-v $(PWD):/workdir  \
 		ivan28823/emcaworkspace
-	@sudo chown -R $(USER) *
