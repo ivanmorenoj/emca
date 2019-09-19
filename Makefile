@@ -16,12 +16,15 @@ SRC_EXT = cpp
 REMOTE_USER = pi
 REMOTE_HOST = 192.168.1.15
 REMOTE_DIR	= ~/emca_gases/
-REMOTE_WAN	= ivan28823.sytes.net
+REMOTE_WAN	= ivan28823.duckdns.org
 WAN_PORT	= 9797
 
 # config file
 CFG_FILE 		= mainConfig.cfg
 SYSTEMD_UNIT	= install/emca.service
+
+#container options
+CONTAINER_NAME	= ivan28823/emcaworkspace
 
 # code lists #
 # Find all source files in the source directory, sorted by
@@ -112,9 +115,19 @@ exe:	dirs $(BIN_PATH)/$(BIN_NAME)
 	@echo "[LOG] Excecuting $(BIN_NAME)"
 	@./$(BIN_NAME)
 
+#install qemu multiarch support
+.PHONY: qemu
+qemu:
+	@echo "[LOG] qemu"
+	@docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+
 #compile in amd64 for armv7l (raspberry pi 3) using qemu-arm-static
 build_arm:
 	@echo "[LOG] Building in docker container workdir: $(PWD)"
 	@docker run --rm -it \
 		-v $(PWD):/workdir  \
-		ivan28823/emcaworkspace
+		$(CONTAINER_NAME)
+
+build_ws:
+	@echo "[LOG] Building docker container as $(CONTAINER_NAME)"
+	@docker build -t $(CONTAINER_NAME) . 

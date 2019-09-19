@@ -1,4 +1,5 @@
 .vscode/
+.workspacedep/
 build/
 test/bin/
 emca

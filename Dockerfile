@@ -22,9 +22,13 @@ RUN apt-get update && \
     g++ \
     make \
     git \
-    sudo && \
+    sudo \
+    apt-transport-https \
+    ca-certificates \
+    gnupg2 \
+    software-properties-common && \
     cd /tmp/ && \
-    git clone git://git.drogon.net/wiringPi && \
+    git clone http://github.com/WiringPi/WiringPi.git wiringPi && \
     cd wiringPi && \
     ./build
 
