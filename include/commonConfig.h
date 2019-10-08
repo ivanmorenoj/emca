@@ -3,6 +3,9 @@
 
 #include <time.h>
 #include <stdint.h>
+#include <iostream>
+
+using std::string;
 /**
  * Alphasense sensor config data
  */
@@ -120,12 +123,45 @@ struct timeCfg {
   int restore;
 };
 
+/* LoRa cfg Settings */
+struct lora{
+    string      port;
+    string      txPower;
+    string      activationMethod;
+    string      dataRate;
+    string      channel;
+    string      NwkSKey;
+    string      AppSKey;
+    string      DevAddr;
+    uint32_t    frameCounter;
+};
+
+/* LoRa Payload structs */
+struct byte_payload{
+    // ambiental variables
+    int8_t      _tem;   // -127 - 127 in °C
+    uint8_t     _hum;   // 0 - 100 in %
+    uint16_t    _pre;   // 0 - 65535 in hPa
+
+    // gas variables
+    uint16_t    _co;    // 0 - 65535 in ppb 
+    uint16_t    _o3;    // 0 - 65535 in ppb 
+    uint16_t    _so2;   // 0 - 65535 in ppb 
+    uint16_t    _no2;   // 0 - 65535 in ppb 
+};
+
+union lora_payload{
+    byte_payload _bytes;
+    uint8_t _raw[14];
+};
+
 struct projectCfg {
   int bme280Address;
   struct timeCfg        _tm;
   struct dbCfg          _sql;
   struct alphasenseCfg  _gas[3];
   struct aeroqualCfg    _o3gas;
+  struct lora           _lora;
 };
 
 #endif //COMMONCONFIG_H_
