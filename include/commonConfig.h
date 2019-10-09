@@ -5,7 +5,6 @@
 #include <stdint.h>
 #include <iostream>
 
-using std::string;
 /**
  * Alphasense sensor config data
  */
@@ -125,15 +124,15 @@ struct timeCfg {
 
 /* LoRa cfg Settings */
 struct lora{
-    string      port;
-    string      txPower;
-    string      activationMethod;
-    string      dataRate;
-    string      channel;
-    string      NwkSKey;
-    string      AppSKey;
-    string      DevAddr;
-    uint32_t    frameCounter;
+  std::string      port;
+  std::string      txPower;
+  std::string      activationMethod;
+  std::string      dataRate;
+  std::string      channel;
+  std::string      NwkSKey;
+  std::string      AppSKey;
+  std::string      DevAddr;
+  uint32_t    frameCounter;
 };
 
 /* LoRa Payload structs */

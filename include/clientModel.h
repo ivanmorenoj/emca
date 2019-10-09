@@ -33,7 +33,7 @@ public:
     /* Chech comminication */
     uint8_t sendCC();
     /* Send Payload */
-    uint8_t sendSP(lora_payload *_loraPayload,gas_values *_gasvalues);
+    uint8_t sendSP(lora_payload *_loraPayload,db_values *_gasvalues);
     /* send Tx Power */
     uint8_t sendTP();
     /* send Activation method */

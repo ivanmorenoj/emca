@@ -53,7 +53,7 @@ flagmanager: testFlagManager.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDE) $(LIBS) $(SRC_DIR)/AlphasenseSensor.cpp $(SRC_DIR)/MCP3424.cpp $(SRC_DIR)/bme280.cpp $(SRC_DIR)/flagManager.cpp $< -o bin/$@
 
 clean:
-	rm -r bin/
+	rm bin/*
 
 build_arm:
 	@echo "[LOG] Building test in docker container workdir: $(PWD)"

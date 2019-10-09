@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include "plog/Log.h"
 #include "clientModel.h"
-#include "utilities.h"
 
 static void hex2str(lora_payload *_lp,char *str) {
     char * tmp = str;
@@ -91,7 +90,7 @@ uint8_t clientModel::sendCC() {
 }
 
 /* Command: [SP] send payload*/
-uint8_t clientModel::sendSP(lora_payload *_loraPayload,gas_values *_gasValues) {
+uint8_t clientModel::sendSP(lora_payload *_loraPayload,db_values *_gasValues) {
     memset(_buff,0,100);
 
     makeLoRaPayload(_gasValues,_loraPayload);

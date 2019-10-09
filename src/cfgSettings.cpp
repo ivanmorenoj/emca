@@ -134,6 +134,19 @@ int getSettings(struct projectCfg *_con,const char *_path) {
             _con->_o3gas.cond.humidity[k]    = _op_a["humidity"][k];
             _con->_o3gas.cond.ranges[k]      = _op_a["ranges"][k];
         }
+
+         /* lookup LoRa settings */
+        const libconfig::Setting &_LoRa = root["LoRa"];
+        _LoRa.lookupValue("port"        ,_con->_lora.port);
+        _LoRa.lookupValue("txPower"     ,_con->_lora.txPower);
+        _LoRa.lookupValue("actMethod"   ,_con->_lora.activationMethod);
+        _LoRa.lookupValue("dataRate"    ,_con->_lora.dataRate);
+        _LoRa.lookupValue("channel"     ,_con->_lora.channel);
+        _LoRa.lookupValue("NwkSKey"     ,_con->_lora.NwkSKey);
+        _LoRa.lookupValue("AppSKey"     ,_con->_lora.AppSKey);
+        _LoRa.lookupValue("DevAddr"     ,_con->_lora.DevAddr);
+        _LoRa.lookupValue("frameCounter",_con->_lora.frameCounter);
+
         success = 1;
     }catch (const libconfig::SettingNotFoundException &nfex) {
         PLOG_FATAL << "Settings not found!";
@@ -208,4 +221,33 @@ void printSettings(struct projectCfg *_cfg){
               << "\t" << _cfg->_o3gas.cond.humidity[1] 
               << "\n\trangues:\t" << _cfg->_o3gas.cond.ranges[0]
               << "\t" << _cfg->_o3gas.cond.ranges[1] << std::endl;
+
+    std::cout << "\nLoRa"
+          << "\n\tport:\t\t"        << _cfg->_lora.port
+          << "\n\ttxPower:\t"       << _cfg->_lora.txPower
+          << "\n\tactMethod:\t"     << _cfg->_lora.activationMethod
+          << "\n\tdataRate:\t"      << _cfg->_lora.dataRate
+          << "\n\tchannel:\t"       << _cfg->_lora.channel
+          << "\n\tNwkSKey:\t"       << _cfg->_lora.NwkSKey
+          << "\n\tAppSKey:\t"       << _cfg->_lora.AppSKey
+          << "\n\tDevAddr:\t"       << _cfg->_lora.DevAddr
+          << "\n\tFramecounter:\t"  << _cfg->_lora.frameCounter << std::endl;
+}
+
+void writeFrameCounter(struct projectCfg *_con,const char *_path) {
+    libconfig::Config cfg;
+
+    try {
+        cfg.readFile(_path);
+
+        libconfig::Setting &frameCounter = cfg.lookup("LoRa.frameCounter");
+        frameCounter = (int)_con->_lora.frameCounter;
+        cfg.writeFile(_path);
+
+    } catch (const libconfig::FileIOException &fioex) {
+        PLOG_ERROR << "I/O error while reading file." << std::endl;
+    } catch (const libconfig::ParseException &pex) {
+        PLOG_ERROR << "Parse error at " << pex.getFile() << ":" << pex.getLine()
+             << " - " << pex.getError() << std::endl;
+    }
 }

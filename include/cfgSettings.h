@@ -14,4 +14,11 @@ extern int getSettings(struct projectCfg *_con,const char *_path);
  */
 extern void printSettings(struct projectCfg *_cfg);
 
+/**
+ *  Write value of frame counter in cfg file
+ *  @param _con - pointer to projectCfg struct
+ *  @param _path - path to cfg file
+ */
+extern void writeFrameCounter(struct projectCfg *_con,const char *_path);
+
 #endif //CFGSETTING_H_
