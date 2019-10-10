@@ -17,7 +17,7 @@
 
 #define EVER    ;;    
 
-//#define INSTALL
+#define INSTALL
 #ifdef INSTALL
     #define CFG_PATH    "/etc/emca/config.cfg"
     #define LOG_PATH    "/var/log/emca/emca.log"
@@ -54,7 +54,8 @@ int main(int argc, char const *argv[])
     _values.amb = &_ab;
 
     /* General Config */
-    struct projectCfg mainCfg = {0};
+    struct projectCfg mainCfg;
+    
     if (getSettings(&mainCfg,CFG_PATH)) {
         PLOG_INFO << "Load config";
         //printSettings(&mainCfg);

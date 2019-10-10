@@ -1,0 +1,14 @@
+[Unit]
+Description= EMCA Service
+After=syslog.target mysqld.service
+Requires=mysqld.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/emca
+Restart=always
+RestartSec=60
+KillMode=mixed
+
+[Install]
+WantedBy=multi-user.target

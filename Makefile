@@ -21,7 +21,7 @@ WAN_PORT	= 9796
 
 # config file
 CFG_FILE 		= mainConfig.cfg
-SYSTEMD_UNIT	= install/emca.service
+SYSTEMD_UNIT	= release/emca.service
 
 #container options
 CONTAINER_NAME	= ivan28823/emcaworkspace
