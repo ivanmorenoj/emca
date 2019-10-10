@@ -13,6 +13,7 @@
 #include "CircularList.h"
 #include "CircularList.cpp"
 #include "cfgSettings.h"
+#include "clientModel.h"
 
 #define EVER    ;;    
 
@@ -40,10 +41,15 @@ int main(int argc, char const *argv[])
 
     PLOG_INFO << "\n>>>>>>>>>>>>>>>>>Init program [" << (int)getpid() << "] <<<<<<<<<<<<<<<<<<<<";
     
+    /* General Variables */
+    uint8_t _errorCounter = 0;
+
     /* DataBase structs*/
     struct ambVariables _ab;
     struct db_info _info;
     struct db_values _values;
+    lora_payload _lp;
+
     _info.amb = &_ab;
     _values.amb = &_ab;
 
@@ -56,6 +62,10 @@ int main(int argc, char const *argv[])
         PLOG_ERROR << "Culdn't get config";
         return 0;
     } 
+
+    /* Client LoRa */
+    clientModel _loraClient;
+    _loraClient.setConfig(&mainCfg._lora);
 
     /* initializing ambiental sensor */
     bme280 _amb(mainCfg.bme280Address);
@@ -85,7 +95,27 @@ int main(int argc, char const *argv[])
     for (int i = 0; i < 3 ; ++i)
         _mp.addNode(new flagManager(&mainCfg._gas[i].cond,&_amb,&_gasS[i]));
     _mp.addNode(new flagManager(&mainCfg._o3gas.cond,&_amb,&_o3gas));
-    
+
+    /* Open serial port loaded from cfg file */
+    if (!_loraClient.openSerial()) {
+        PLOG_FATAL << "Cannot connect to serial port";
+        return EXIT_FAILURE;
+    }
+
+    /*Send config Values to usb stick */
+    _errorCounter = 0;
+    while ( _loraClient.sendTP() || _loraClient.sendAM() || 
+            _loraClient.sendDR() || _loraClient.sendCH() || 
+            _loraClient.sendNK() || _loraClient.sendAK() || 
+            _loraClient.sendDA() || _loraClient.sendFC() ) {
+        PLOG_ERROR << "Problem when sending config to usb stick";
+        sleep(15);
+        if (_errorCounter++ > 5) {
+            PLOG_ERROR << "Cannot send config Values, exit";
+            return EXIT_FAILURE;
+        }
+    }
+
     /* initializing database */
     sqlConnector _db;
     _db.setUser(mainCfg._sql.user);
@@ -101,7 +131,9 @@ int main(int argc, char const *argv[])
     /* connect to database */
     _db.connect();
     PLOG_INFO << "Init inisertions to database";
-
+    
+    /* Reset error counter */
+    _errorCounter = 0;
     for (EVER) {
         _ab.temp = _amb.getTemperature();
         _ab.pre = _amb.getPressure();
@@ -130,6 +162,19 @@ int main(int argc, char const *argv[])
             _mp.next();
         }
         _db.insert_in_GAS_VALUES(&_values);
+
+        if (!_loraClient.sendSP(&_lp,&_values)) {
+            mainCfg._lora.frameCounter++;
+            writeFrameCounter(&mainCfg,CFG_PATH);
+            _errorCounter = 0;
+        } else {
+            _errorCounter++;
+            PLOG_ERROR << "No response Recived when send payload for " << _errorCounter << " times";
+            if (_errorCounter > 10) {
+                PLOG_FATAL << "No response from LoRa Stick for +10 times, exit";
+                return EXIT_FAILURE;
+            }
+        }
 
         sleep(mainCfg._tm.sampling);
     }
