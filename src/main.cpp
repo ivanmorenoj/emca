@@ -55,7 +55,7 @@ int main(int argc, char const *argv[])
 
     /* General Config */
     struct projectCfg mainCfg;
-    
+
     if (getSettings(&mainCfg,CFG_PATH)) {
         PLOG_INFO << "Load config";
         //printSettings(&mainCfg);
@@ -132,6 +132,7 @@ int main(int argc, char const *argv[])
     /* connect to database */
     _db.connect();
     PLOG_INFO << "Init inisertions to database";
+    PLOG_DEBUG << "Init with frameCounter = " << mainCfg._lora.frameCounter;
     
     /* Reset error counter */
     _errorCounter = 0;
