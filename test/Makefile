@@ -14,7 +14,7 @@ release: dirs
 	@$(MAKE) -j$(NPROC) all
 
 .PHONY: all
-all: alphasense bme280 mcp3424 aeroqual libconfig circularlist sqlConnector flagmanager
+all: alphasense bme280 mcp3424 aeroqual libconfig circularlist sqlConnector flagmanager lora
 
 .PHONY: dirs
 dirs:
@@ -52,6 +52,10 @@ sqlConnector: testSqlConnector.cpp
 flagmanager: testFlagManager.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDE) $(LIBS) $(SRC_DIR)/AlphasenseSensor.cpp $(SRC_DIR)/MCP3424.cpp $(SRC_DIR)/bme280.cpp $(SRC_DIR)/flagManager.cpp $< -o bin/$@
 
+.PHONY: lora
+lora: testLoRaStick.cpp
+	$(CXX) $(CXXFLAGS) $(INCLUDE) $(LIBS) -lconfig++ $(SRC_DIR)/cfgSettings.cpp $(SRC_DIR)/clientModel.cpp $(SRC_DIR)/serial.cpp $< -o bin/$@
+
 clean:
 	rm bin/*
 
@@ -60,4 +64,3 @@ build_arm:
 	@docker run --rm -it \
 			-v $(shell dirname $(PWD)):/workdir  \
 			ivan28823/emcaworkspace 
-	@sudo chown -R $(USER) *
