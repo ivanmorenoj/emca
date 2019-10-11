@@ -45,10 +45,10 @@ private:
     uint8_t _config;
     uint8_t _sign;
 
-    void writeConfig();
+    uint8_t writeConfig();
     void configSetBit(uint8_t bit,uint8_t value);
     void generateConfig();
-    void openI2C();
+    uint8_t openI2C();
     void closeI2C();
     uint8_t readConfig();
     uint32_t readRaw();

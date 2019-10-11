@@ -14,7 +14,7 @@ SRC_EXT = cpp
 
 # remote host copy #
 REMOTE_USER = pi
-REMOTE_HOST = 192.168.1.15
+REMOTE_HOST = rpi
 REMOTE_DIR	= ~/emca_gases/
 REMOTE_WAN	= ivan28823.duckdns.org
 WAN_PORT	= 9797

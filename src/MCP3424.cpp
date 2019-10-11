@@ -23,27 +23,34 @@ MCP3424::MCP3424(struct MCP3424Config *_cnf) {
 MCP3424::~MCP3424() {
     /* Nothing */
 }
-void MCP3424::openI2C() {
+uint8_t MCP3424::openI2C() {
     _fd = open("/dev/i2c-1",O_RDWR);
     if (_fd < 0) {
         PLOG_FATAL << "Failed to open i2c port";
+        return 1;
     }
     if (ioctl(_fd,I2C_SLAVE,_conf->address) < 0){
         PLOG_FATAL << "Failed set i2c port for read";
+        return 2;
     }
+    return 0;
 }
 void MCP3424::closeI2C() {
-    close(_fd);
-    _fd = -1;
+    if (_fd > 0) {
+        close(_fd);
+        _fd = -1;
+    }
 }
-void MCP3424::writeConfig() {
+uint8_t MCP3424::writeConfig() {
     if (write(_fd,&_config,1) != 1){
         PLOG_FATAL << "Failed to write i2c";
+        return 1;
     }
+    return 0;
 }
 uint8_t MCP3424::readConfig() {
     if (read(_fd ,_rBuff ,4) < 0) {
-        PLOG_FATAL << "Failed to read i2c \n";
+        //PLOG_FATAL << "Failed to read i2c \n";
     }
 
     if (_conf->bitrate == 18)
@@ -63,14 +70,35 @@ void MCP3424::configSetBit(uint8_t bit,uint8_t value) {
 uint32_t MCP3424::readRaw() {
     uint32_t raw = 0;
     _sign = 0;
+    uint16_t tries;
 
-    openI2C();
+    if (openI2C())
+        return 0;
 
     _config |= 128;
 
-    writeConfig();
-    
-    for (uint16_t i = 0; (i < 1000) && (readConfig() & 128); i++);
+    tries = 5;
+    do {
+        if (!writeConfig())
+            break;
+        usleep(10);
+    } while (--tries);
+
+    if (tries < 1) {
+        PLOG_FATAL << "Failed to write ConfigRegister";
+        closeI2C();
+        return 0;
+    }
+
+    tries = 1000;
+    while ((readConfig() & 128) && --tries)
+        usleep(10);
+
+    if (tries < 1) {
+        PLOG_FATAL << "Failed to read ConfigRegister";
+        closeI2C();
+        return 0;
+    }
     
     closeI2C();
 
