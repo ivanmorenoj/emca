@@ -125,10 +125,17 @@ int main(int argc, char const *argv[])
     _db.setSchema(mainCfg._sql.schema);
         
     /* Restore time after init sensor */
-    PLOG_INFO << "Wait for [" << mainCfg._tm.restore << "] seconds";
     PLOG_INFO << "Samplig Time is [" <<  mainCfg._tm.sampling << "] seconds"; 
-    for (int t = 0; t < mainCfg._tm.restore ; ++t)
-        sleep(1);
+    
+    if (time(NULL) - (time_t)mainCfg._tm.latestMeasure > (time_t)mainCfg._tm.restore) {
+        PLOG_INFO << "Wait for [" << mainCfg._tm.restore << "] seconds";
+        for (int t = 0; t < mainCfg._tm.restore ; ++t)
+            sleep(1);
+    } else {
+        PLOG_INFO << "Latest time is less than restore time, only wait for [" << 180 << "] seconds";
+        for (int t = 0; t < 180 ; ++t)
+            sleep(1);
+    }
 
     /* connect to database */
     _db.connect();

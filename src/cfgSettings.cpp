@@ -50,6 +50,7 @@ int getSettings(struct projectCfg *_con,const char *_path) {
         const libconfig::Setting &_tm = root["timeCfg"];
         _tm.lookupValue("sampling", _con->_tm.sampling); 
         _tm.lookupValue("restore", _con->_tm.restore);
+        _tm.lookupValue("latestMeasure", _con->_tm.latestMeasure);
 
         /* lookup database config*/
         std::string tmp[4];
@@ -164,7 +165,8 @@ void printSettings(struct projectCfg *_cfg){
 
     std::cout << "\nTime data"
               << "\n\tSampling:\t" << _cfg->_tm.sampling 
-              << "\n\tRestore:\t" << _cfg->_tm.restore << std::endl;
+              << "\n\tRestore:\t" << _cfg->_tm.restore 
+              << "\n\tLatest Measurement:\t" << _cfg->_tm.latestMeasure << std::endl;
 
     std::cout << "\nData Base"
               << "\n\tDB user:\t" << std::string(_cfg->_sql.user)
@@ -241,7 +243,11 @@ void writeFrameCounter(struct projectCfg *_con,const char *_path) {
         cfg.readFile(_path);
 
         libconfig::Setting &frameCounter = cfg.lookup("LoRa.frameCounter");
+        libconfig::Setting &latestMeasure = cfg.lookup("timeCfg.latestMeasure");
+
         frameCounter = (int)_con->_lora.frameCounter;
+        latestMeasure = (int)_con->_tm.latestMeasure; 
+
         cfg.writeFile(_path);
 
     } catch (const libconfig::FileIOException &fioex) {

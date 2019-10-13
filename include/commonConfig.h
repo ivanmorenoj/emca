@@ -120,6 +120,7 @@ struct dbCfg {
 };
 
 struct timeCfg {
+  uint32_t  latestMeasure;
   int sampling;
   int restore;
 };
