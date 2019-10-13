@@ -39,7 +39,7 @@ int main(int argc, char const *argv[])
     printf("[+] Init program PID = %d\n  Config file in \'%s\'\n  Log file in \'%s\'\n",
                 (int)getpid(),CFG_PATH,LOG_PATH);
 
-    PLOG_INFO << "\n>>>>>>>>>>>>>>>>>Init program [" << (int)getpid() << "] <<<<<<<<<<<<<<<<<<<<";
+    PLOG_INFO << "\n\t\t>>>>>>>>>>>>>>>>>Init program [" << (int)getpid() << "] <<<<<<<<<<<<<<<<<<<<";
     
     /* General Variables */
     uint8_t _errorCounter = 0;
@@ -126,6 +126,7 @@ int main(int argc, char const *argv[])
         
     /* Restore time after init sensor */
     PLOG_INFO << "Wait for [" << mainCfg._tm.restore << "] seconds";
+    PLOG_INFO << "Samplig Time is [" <<  mainCfg._tm.sampling << "] seconds"; 
     for (int t = 0; t < mainCfg._tm.restore ; ++t)
         sleep(1);
 

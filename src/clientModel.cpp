@@ -5,7 +5,7 @@
 
 static void hex2str(lora_payload *_lp,char *str) {
     char * tmp = str;
-    for (uint8_t i = 0; i < 18; i++) {
+    for (uint8_t i = 0; i < _LORA_PAYLOAD_LENGTH; i++) {
         sprintf(tmp,"%02X",_lp->_raw[i]);
         tmp += 2;
     }    

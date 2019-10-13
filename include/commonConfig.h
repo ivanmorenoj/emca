@@ -5,6 +5,8 @@
 #include <stdint.h>
 #include <iostream>
 
+#define _LORA_PAYLOAD_LENGTH 12
+
 /**
  * Alphasense sensor config data
  */
@@ -151,7 +153,7 @@ struct byte_payload{
 
 union lora_payload{
     byte_payload _bytes;
-    uint8_t _raw[14];
+    uint8_t _raw[_LORA_PAYLOAD_LENGTH];
 };
 
 struct projectCfg {
