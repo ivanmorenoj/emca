@@ -45,12 +45,12 @@ int getSettings(struct projectCfg *_con,const char *_path) {
     try {
         /* lookup bme280 address */
         _con->bme280Address = cfg.lookup("bme280Adrres");
-        _con->latestMeasure = cfg.lookup("latestMeasure");
         
         /* Lookup time*/
         const libconfig::Setting &_tm = root["timeCfg"];
         _tm.lookupValue("sampling", _con->_tm.sampling); 
         _tm.lookupValue("restore", _con->_tm.restore);
+        _tm.lookupValue("latestMeasure", _con->_tm.latestMeasure);
 
         /* lookup database config*/
         std::string tmp[4];
@@ -162,11 +162,11 @@ int getSettings(struct projectCfg *_con,const char *_path) {
 
 void printSettings(struct projectCfg *_cfg){
     std::cout << "BME280 address:\t" << _cfg->bme280Address << std::endl;
-    std::cout << "Latest Measurement:\t" << _cfg->latestMeasure << std::endl;
 
     std::cout << "\nTime data"
               << "\n\tSampling:\t" << _cfg->_tm.sampling 
-              << "\n\tRestore:\t" << _cfg->_tm.restore << std::endl;
+              << "\n\tRestore:\t" << _cfg->_tm.restore 
+              << "\n\tLatest Measurement:\t" << _cfg->_tm.latestMeasure << std::endl;
 
     std::cout << "\nData Base"
               << "\n\tDB user:\t" << std::string(_cfg->_sql.user)
@@ -243,10 +243,10 @@ void writeFrameCounter(struct projectCfg *_con,const char *_path) {
         cfg.readFile(_path);
 
         libconfig::Setting &frameCounter = cfg.lookup("LoRa.frameCounter");
-        libconfig::Setting &latestMeasure = cfg.lookup("latestMeasure");
+        libconfig::Setting &latestMeasure = cfg.lookup("timeCfg.latestMeasure");
 
         frameCounter = (int)_con->_lora.frameCounter;
-        latestMeasure = (int)_con->latestMeasure; 
+        latestMeasure = (int)_con->_tm.latestMeasure; 
 
         cfg.writeFile(_path);
 

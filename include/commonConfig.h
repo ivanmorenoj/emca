@@ -120,6 +120,7 @@ struct dbCfg {
 };
 
 struct timeCfg {
+  uint32_t  latestMeasure;
   int sampling;
   int restore;
 };
@@ -158,7 +159,6 @@ union lora_payload{
 
 struct projectCfg {
   int bme280Address;
-  uint32_t  latestMeasure;
   struct timeCfg        _tm;
   struct dbCfg          _sql;
   struct alphasenseCfg  _gas[3];
