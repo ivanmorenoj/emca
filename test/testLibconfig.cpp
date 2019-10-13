@@ -27,6 +27,10 @@ int main(int argc, char const *argv[])
     std::cout << "Write Frame Counter..." << std::endl;
 
     mainCfg._lora.frameCounter++;
+    mainCfg.latestMeasure = time(NULL);
+
+    std::cout << "Time is: " << mainCfg.latestMeasure << std::endl;
+
     writeFrameCounter(&mainCfg,CFG_PATH);
 
     std::cout  << "End of the program\n";

@@ -45,6 +45,7 @@ int getSettings(struct projectCfg *_con,const char *_path) {
     try {
         /* lookup bme280 address */
         _con->bme280Address = cfg.lookup("bme280Adrres");
+        _con->latestMeasure = cfg.lookup("latestMeasure");
         
         /* Lookup time*/
         const libconfig::Setting &_tm = root["timeCfg"];
@@ -161,6 +162,7 @@ int getSettings(struct projectCfg *_con,const char *_path) {
 
 void printSettings(struct projectCfg *_cfg){
     std::cout << "BME280 address:\t" << _cfg->bme280Address << std::endl;
+    std::cout << "Latest Measurement:\t" << _cfg->latestMeasure << std::endl;
 
     std::cout << "\nTime data"
               << "\n\tSampling:\t" << _cfg->_tm.sampling 
@@ -241,7 +243,11 @@ void writeFrameCounter(struct projectCfg *_con,const char *_path) {
         cfg.readFile(_path);
 
         libconfig::Setting &frameCounter = cfg.lookup("LoRa.frameCounter");
+        libconfig::Setting &latestMeasure = cfg.lookup("latestMeasure");
+
         frameCounter = (int)_con->_lora.frameCounter;
+        latestMeasure = (int)_con->latestMeasure; 
+
         cfg.writeFile(_path);
 
     } catch (const libconfig::FileIOException &fioex) {
