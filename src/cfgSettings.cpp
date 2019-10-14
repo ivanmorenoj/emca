@@ -246,7 +246,7 @@ void writeFrameCounter(struct projectCfg *_con,const char *_path) {
         libconfig::Setting &latestMeasure = cfg.lookup("timeCfg.latestMeasure");
 
         frameCounter = (int)_con->_lora.frameCounter;
-        latestMeasure = (int)_con->_tm.latestMeasure; 
+        latestMeasure = time(NULL); 
 
         cfg.writeFile(_path);
 

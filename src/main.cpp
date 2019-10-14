@@ -127,7 +127,7 @@ int main(int argc, char const *argv[])
     /* Restore time after init sensor */
     PLOG_INFO << "Samplig Time is [" <<  mainCfg._tm.sampling << "] seconds"; 
     
-    if (time(NULL) - (time_t)mainCfg._tm.latestMeasure > (time_t)mainCfg._tm.restore) {
+    if (time(NULL) - mainCfg._tm.latestMeasure > (uint32_t)mainCfg._tm.restore) {
         PLOG_INFO << "Wait for [" << mainCfg._tm.restore << "] seconds";
         for (int t = 0; t < mainCfg._tm.restore ; ++t)
             sleep(1);
