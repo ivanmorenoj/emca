@@ -57,11 +57,11 @@ int main(int argc, char const *argv[])
     struct projectCfg mainCfg;
 
     if (getSettings(&mainCfg,CFG_PATH)) {
-        PLOG_INFO << "Load config";
+        PLOG_INFO << "Load config from: " << CFG_PATH;
         //printSettings(&mainCfg);
     } else {
-        PLOG_ERROR << "Culdn't get config";
-        return 0;
+        PLOG_FATAL << "Culdn't get config";
+        return EXIT_FAILURE;
     } 
 
     /* Client LoRa */
@@ -111,8 +111,8 @@ int main(int argc, char const *argv[])
             _loraClient.sendDA() || _loraClient.sendFC() ) {
         PLOG_ERROR << "Problem when sending config to usb stick";
         sleep(15);
-        if (_errorCounter++ > 5) {
-            PLOG_ERROR << "Cannot send config Values, exit";
+        if (++_errorCounter > 5) {
+            PLOG_FATAL << "Cannot send config Values, exit";
             return EXIT_FAILURE;
         }
     }
@@ -133,8 +133,7 @@ int main(int argc, char const *argv[])
             sleep(1);
     } else {
         PLOG_INFO << "Latest time is less than restore time, only wait for [" << 180 << "] seconds";
-        for (int t = 0; t < 180 ; ++t)
-            sleep(1);
+        sleep(180);
     }
 
     /* connect to database */

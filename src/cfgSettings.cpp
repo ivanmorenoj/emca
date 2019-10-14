@@ -32,10 +32,10 @@ int getSettings(struct projectCfg *_con,const char *_path) {
     try {
         cfg.readFile(_path);
     } catch (const libconfig::FileIOException &fioex) {
-        PLOG_ERROR << "I/O error while reading file." << std::endl;
+        PLOG_FATAL << "I/O error while reading file." << std::endl;
         exit(EXIT_FAILURE);
     } catch (const libconfig::ParseException &pex) {
-        PLOG_ERROR << "Parse error at " << pex.getFile() << ":" << pex.getLine()
+        PLOG_FATAL << "Parse error at " << pex.getFile() << ":" << pex.getLine()
              << " - " << pex.getError() << std::endl;
         exit(EXIT_FAILURE);
     }
