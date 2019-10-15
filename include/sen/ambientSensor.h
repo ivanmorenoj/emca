@@ -9,7 +9,7 @@
 #include <time.h>
 #include <stdint.h>
 
-#define INTERVAL    60  //seg
+#define _INTERVAL_AS    60  //seg
 
 class ambientSensor{
 public:
@@ -23,7 +23,7 @@ private:
     
 protected:
     bool isTime() {
-        if (time(NULL) - _lastTime > INTERVAL) {
+        if (time(NULL) - _lastTime > _INTERVAL_AS) {
             _lastTime = time(NULL);
             return true;
         }

@@ -49,11 +49,11 @@ void sqlConnector::connect() {
       stmt = con->createStatement();    
     } catch(sql::SQLException &e ) {
       /* manage errors*/
-      PLOG_ERROR << "# ERR: SQLException in " << __FILE__;
-      PLOG_ERROR << "( << __FUNCTION__ << ) on line >>" << __LINE__ << std::endl;
-      PLOG_ERROR << "# ERR: " << e.what();
-      PLOG_ERROR << " (MySQL error code: " << e.getErrorCode();
-      PLOG_ERROR << ", SQLState: " << e.getSQLState() << " )" << std::endl;
+      PLOG_FATAL << "# ERR: SQLException in " << __FILE__
+          << "\n\t( << __FUNCTION__ << ) on line >>" << __LINE__
+          << "\n\t# ERR: " << e.what()
+          << "\n\t(MySQL error code: " << e.getErrorCode()
+          << "\n\t, SQLState: " << e.getSQLState() << " )";
     }
 }
 void sqlConnector::excecuteQuery(char * query_str) {
@@ -62,11 +62,11 @@ void sqlConnector::excecuteQuery(char * query_str) {
     stmt->execute(query_str);
   } catch(sql::SQLException &e) {
     /* manage errors*/
-    PLOG_ERROR << "# ERR: SQLException in " << __FILE__;
-    PLOG_ERROR << "( << __FUNCTION__ << ) on line >>" << __LINE__ << std::endl;
-    PLOG_ERROR << "# ERR: " << e.what();
-    PLOG_ERROR << " (MySQL error code: " << e.getErrorCode();
-    PLOG_ERROR << ", SQLState: " << e.getSQLState() << " )" << std::endl;
+    PLOG_FATAL << "# ERR: SQLException in " << __FILE__
+          << "\n\t( << __FUNCTION__ << ) on line >>" << __LINE__
+          << "\n\t# ERR: " << e.what()
+          << "\n\t(MySQL error code: " << e.getErrorCode()
+          << "\n\t, SQLState: " << e.getSQLState() << " )";
   }
 }
 void sqlConnector::insert_in_GAS_INFO(struct db_info *val) {

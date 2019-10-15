@@ -32,10 +32,10 @@ int getSettings(struct projectCfg *_con,const char *_path) {
     try {
         cfg.readFile(_path);
     } catch (const libconfig::FileIOException &fioex) {
-        PLOG_ERROR << "I/O error while reading file." << std::endl;
+        PLOG_FATAL << "I/O error while reading file." << std::endl;
         exit(EXIT_FAILURE);
     } catch (const libconfig::ParseException &pex) {
-        PLOG_ERROR << "Parse error at " << pex.getFile() << ":" << pex.getLine()
+        PLOG_FATAL << "Parse error at " << pex.getFile() << ":" << pex.getLine()
              << " - " << pex.getError() << std::endl;
         exit(EXIT_FAILURE);
     }
@@ -50,6 +50,7 @@ int getSettings(struct projectCfg *_con,const char *_path) {
         const libconfig::Setting &_tm = root["timeCfg"];
         _tm.lookupValue("sampling", _con->_tm.sampling); 
         _tm.lookupValue("restore", _con->_tm.restore);
+        _tm.lookupValue("latestMeasure", _con->_tm.latestMeasure);
 
         /* lookup database config*/
         std::string tmp[4];
@@ -134,6 +135,19 @@ int getSettings(struct projectCfg *_con,const char *_path) {
             _con->_o3gas.cond.humidity[k]    = _op_a["humidity"][k];
             _con->_o3gas.cond.ranges[k]      = _op_a["ranges"][k];
         }
+
+         /* lookup LoRa settings */
+        const libconfig::Setting &_LoRa = root["LoRa"];
+        _LoRa.lookupValue("port"        ,_con->_lora.port);
+        _LoRa.lookupValue("txPower"     ,_con->_lora.txPower);
+        _LoRa.lookupValue("actMethod"   ,_con->_lora.activationMethod);
+        _LoRa.lookupValue("dataRate"    ,_con->_lora.dataRate);
+        _LoRa.lookupValue("channel"     ,_con->_lora.channel);
+        _LoRa.lookupValue("NwkSKey"     ,_con->_lora.NwkSKey);
+        _LoRa.lookupValue("AppSKey"     ,_con->_lora.AppSKey);
+        _LoRa.lookupValue("DevAddr"     ,_con->_lora.DevAddr);
+        _LoRa.lookupValue("frameCounter",_con->_lora.frameCounter);
+
         success = 1;
     }catch (const libconfig::SettingNotFoundException &nfex) {
         PLOG_FATAL << "Settings not found!";
@@ -151,7 +165,8 @@ void printSettings(struct projectCfg *_cfg){
 
     std::cout << "\nTime data"
               << "\n\tSampling:\t" << _cfg->_tm.sampling 
-              << "\n\tRestore:\t" << _cfg->_tm.restore << std::endl;
+              << "\n\tRestore:\t" << _cfg->_tm.restore 
+              << "\n\tLatest Measurement:\t" << _cfg->_tm.latestMeasure << std::endl;
 
     std::cout << "\nData Base"
               << "\n\tDB user:\t" << std::string(_cfg->_sql.user)
@@ -208,4 +223,37 @@ void printSettings(struct projectCfg *_cfg){
               << "\t" << _cfg->_o3gas.cond.humidity[1] 
               << "\n\trangues:\t" << _cfg->_o3gas.cond.ranges[0]
               << "\t" << _cfg->_o3gas.cond.ranges[1] << std::endl;
+
+    std::cout << "\nLoRa"
+          << "\n\tport:\t\t"        << _cfg->_lora.port
+          << "\n\ttxPower:\t"       << _cfg->_lora.txPower
+          << "\n\tactMethod:\t"     << _cfg->_lora.activationMethod
+          << "\n\tdataRate:\t"      << _cfg->_lora.dataRate
+          << "\n\tchannel:\t"       << _cfg->_lora.channel
+          << "\n\tNwkSKey:\t"       << _cfg->_lora.NwkSKey
+          << "\n\tAppSKey:\t"       << _cfg->_lora.AppSKey
+          << "\n\tDevAddr:\t"       << _cfg->_lora.DevAddr
+          << "\n\tFramecounter:\t"  << _cfg->_lora.frameCounter << std::endl;
+}
+
+void writeFrameCounter(struct projectCfg *_con,const char *_path) {
+    libconfig::Config cfg;
+
+    try {
+        cfg.readFile(_path);
+
+        libconfig::Setting &frameCounter = cfg.lookup("LoRa.frameCounter");
+        libconfig::Setting &latestMeasure = cfg.lookup("timeCfg.latestMeasure");
+
+        frameCounter = (int)_con->_lora.frameCounter;
+        latestMeasure = time(NULL); 
+
+        cfg.writeFile(_path);
+
+    } catch (const libconfig::FileIOException &fioex) {
+        PLOG_ERROR << "I/O error while reading file." << std::endl;
+    } catch (const libconfig::ParseException &pex) {
+        PLOG_ERROR << "Parse error at " << pex.getFile() << ":" << pex.getLine()
+             << " - " << pex.getError() << std::endl;
+    }
 }

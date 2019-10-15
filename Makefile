@@ -14,14 +14,14 @@ SRC_EXT = cpp
 
 # remote host copy #
 REMOTE_USER = pi
-REMOTE_HOST = 192.168.1.15
+REMOTE_HOST = rpi
 REMOTE_DIR	= ~/emca_gases/
 REMOTE_WAN	= ivan28823.duckdns.org
-WAN_PORT	= 9797
+WAN_PORT	= 9796
 
 # config file
 CFG_FILE 		= mainConfig.cfg
-SYSTEMD_UNIT	= install/emca.service
+SYSTEMD_UNIT	= release/emca.service
 
 #container options
 CONTAINER_NAME	= ivan28823/emcaworkspace
@@ -97,6 +97,11 @@ install: dirs $(BIN_PATH)/$(BIN_NAME)
 	@echo "[LOG] copy $(SYSTEMD_UNIT) on /etc/systemd/system/"
 	@cp $(SYSTEMD_UNIT) /etc/systemd/system/
 	@systemctl daemon-reload
+
+# only copy the bin to path
+install_bin: $(BIN_PATH)/$(BIN_NAME)
+	@echo "[LOG] Installing $(BIN_PATH)/$(BIN_NAME) on /usr/bin/$(BIN_NAME)" 
+	@cp $(BIN_PATH)/$(BIN_NAME) /usr/bin/
 
 # Copy all project to remote host, you have to fill remote variables
 # this way is easier than type a scp command each time to copy the dev

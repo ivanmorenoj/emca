@@ -25,7 +25,7 @@ echo "Creating database $DB_NAME ."
 mysql -e "CREATE DATABASE $DB_NAME /*!40100 DEFAULT CHARACTER SET utf8 */;"
 echo "Creating user $DB_USER .."
 mysql -e "CREATE USER '$DB_USER'@'localhost' IDENTIFIED BY '$DB_PASS';"
-mysql -e "GRANT ALL PRIVILEGES ON $DB_NAME.* TO '$DB_USER'@'localhost';"
+mysql -e "GRANT SELECT,INSERT ON $DB_NAME.* TO '$DB_USER'@'localhost';"
 mysql -e "FLUSH PRIVILEGES;"
 
 #creating tables in $DB_NAME
