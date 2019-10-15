@@ -98,6 +98,11 @@ install: dirs $(BIN_PATH)/$(BIN_NAME)
 	@cp $(SYSTEMD_UNIT) /etc/systemd/system/
 	@systemctl daemon-reload
 
+# only copy the bin to path
+install_bin: $(BIN_PATH)/$(BIN_NAME)
+	@echo "[LOG] Installing $(BIN_PATH)/$(BIN_NAME) on /usr/bin/$(BIN_NAME)" 
+	@cp $(BIN_PATH)/$(BIN_NAME) /usr/bin/
+
 # Copy all project to remote host, you have to fill remote variables
 # this way is easier than type a scp command each time to copy the dev
 # project to production on raspberry pi board
