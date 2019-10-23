@@ -1,0 +1,17 @@
+name: C/C++ CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-18.04
+    
+    steps:
+    - uses: actions/checkout@v1
+    - name: using docker for qemu
+      run: make qemu
+    - name: create directory
+      run: mkdir -p build/bin && chmod -R 777 ./ 
+    - name: make for arm
+      run: docker run --rm -v $(pwd):/workdir ivan28823/emcaworkspace
