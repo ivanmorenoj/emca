@@ -12,13 +12,15 @@
 MCP3424::MCP3424() {
     _conf = NULL;
     _config = 0x90;
-    _fd = -1;   
+    _fd = -1;
+    _generalError = 0;
 }
 MCP3424::MCP3424(struct MCP3424Config *_cnf) {
     _conf = _cnf;
     generateConfig();
     _fd = -1;
     _sign = 0;
+    _generalError = 0;
 }
 MCP3424::~MCP3424() {
     /* Nothing */
@@ -43,7 +45,7 @@ void MCP3424::closeI2C() {
 }
 uint8_t MCP3424::writeConfig() {
     if (write(_fd,&_config,1) != 1){
-        PLOG_FATAL << "Failed to write i2c";
+        //PLOG_FATAL << "Failed to write i2c";
         return 1;
     }
     return 0;
@@ -72,8 +74,10 @@ uint32_t MCP3424::readRaw() {
     _sign = 0;
     uint16_t tries;
 
-    if (openI2C())
+    if (openI2C()) {
+        _generalError++;
         return 0;
+    }
 
     _config |= 128;
 
@@ -86,6 +90,7 @@ uint32_t MCP3424::readRaw() {
 
     if (tries < 1) {
         PLOG_FATAL << "Failed to write ConfigRegister";
+        _generalError++;
         closeI2C();
         return 0;
     }
@@ -96,11 +101,15 @@ uint32_t MCP3424::readRaw() {
 
     if (tries < 1) {
         PLOG_FATAL << "Failed to read ConfigRegister";
+        _generalError++;
         closeI2C();
         return 0;
     }
     
     closeI2C();
+
+    /* Reset general error counter */
+    _generalError = 0;
 
     switch (_conf->bitrate) {
     case 18:
@@ -188,12 +197,18 @@ void MCP3424::setChannel(uint8_t channel) {
 }
 void MCP3424::setConfigValues(struct MCP3424Config *_cnf) {
     _conf = _cnf;
+    _generalError = 0;
     generateConfig();
 }
 double MCP3424::readVoltage() {
     double voltage = 0.0;
     uint32_t raw;
     raw = readRaw();
+
+    if (_generalError > 10) {
+        PLOG_FATAL << "Error count > 50, exit on failure";
+        exit(EXIT_FAILURE);
+    }
 
     double gain = (double) _conf->gain / 2.0;
     double offset = 2.048 / (double)_conf->gain;

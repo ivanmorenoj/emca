@@ -44,6 +44,7 @@ private:
     uint8_t _rBuff[4];
     uint8_t _config;
     uint8_t _sign;
+    uint8_t _generalError;
 
     uint8_t writeConfig();
     void configSetBit(uint8_t bit,uint8_t value);
