@@ -6,7 +6,7 @@
 #include <wiringPiI2C.h>
 #include <stdint.h>
 #include <unistd.h>
-#include "plog/Log.h"
+#include "plog/include/plog/Log.h"
 
 bme280::bme280(){
     _fd = -1;

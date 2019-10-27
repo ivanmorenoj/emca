@@ -4,7 +4,7 @@
 #include <libconfig.h++>
 #include <cstring>
 #include <time.h>
-#include "plog/Log.h"
+#include "plog/include/plog/Log.h"
 #include "cfgSettings.h"
 
 static time_t strToTime(const char *_inputStr) {

@@ -38,7 +38,7 @@ DEPS = $(OBJECTS:.o=.d)
 
 # flags #
 COMPILE_FLAGS = -Wall -g
-INCLUDES = -I include -I /usr/include/cppconn -I src/
+INCLUDES = -I include -I include/plog/include -I /usr/include/cppconn -I src/
 # Space-separated pkg-config libraries used by this project
 LIBS = -lmysqlcppconn -lwiringPi -lm -lconfig++
 

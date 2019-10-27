@@ -2,7 +2,7 @@
  *  Author: Ivan Moreno <ivan1697@gmail.com>
  *      october 2019
  */
-#include "plog/Log.h"
+#include "plog/include/plog/Log.h"
 #include "commonConfig.h"
 #include "cfgSettings.h"
 #include "clientModel.h"
