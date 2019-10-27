@@ -81,7 +81,7 @@ uint32_t MCP3424::readRaw() {
 
     _config |= 128;
 
-    tries = 5;
+    tries = 10;
     do {
         if (!writeConfig())
             break;
@@ -89,8 +89,8 @@ uint32_t MCP3424::readRaw() {
     } while (--tries);
 
     if (tries < 1) {
-        PLOG_FATAL << "Failed to write ConfigRegister";
         _generalError++;
+        PLOG_FATAL << "Failed to write ConfigRegister, errCnt: " << _generalError;
         closeI2C();
         return 0;
     }
@@ -100,8 +100,8 @@ uint32_t MCP3424::readRaw() {
         usleep(10);
 
     if (tries < 1) {
-        PLOG_FATAL << "Failed to read ConfigRegister";
         _generalError++;
+        PLOG_FATAL << "Failed to read ConfigRegister, errCnt: " << _generalError;
         closeI2C();
         return 0;
     }
@@ -201,12 +201,12 @@ void MCP3424::setConfigValues(struct MCP3424Config *_cnf) {
     generateConfig();
 }
 double MCP3424::readVoltage() {
-    double voltage = 0.0;
+    _voltage = 0.0;
     uint32_t raw;
     raw = readRaw();
 
     if (_generalError > 10) {
-        PLOG_FATAL << "Error count > 50, exit on failure";
+        PLOG_FATAL << "Error count > 10, exit on failure";
         exit(EXIT_FAILURE);
     }
 
@@ -229,18 +229,22 @@ double MCP3424::readVoltage() {
 	}
 
     if (_sign == 1)
-        voltage = (double) raw * (lsb / gain) - offset;
+        _voltage = (double) raw * (lsb / gain) - offset;
     else
-        voltage = (double) raw * (lsb / gain);
+        _voltage = (double) raw * (lsb / gain);
 
-    return voltage;
+    return _voltage;
 }
 double MCP3424::readVoltage(uint8_t channel) {
     setChannel(channel);
     return this->readVoltage();
 }
 double MCP3424::getVoltage() {
-    return this->readVoltage();
+    if (isTime()) {
+        return this->readVoltage();
+    } else {
+        return _voltage;
+    }
 }
 
 
