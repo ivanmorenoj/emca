@@ -5,7 +5,7 @@
 #include <unistd.h>
 #include <sys/ioctl.h>
 #include <linux/i2c-dev.h>
-#include "plog/Log.h"
+#include "plog/include/plog/Log.h"
 
 #include "MCP3424.h"
 

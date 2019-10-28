@@ -3,7 +3,7 @@
 #include <cstdlib>
 
 #include "commonConfig.h"
-#include "plog/Log.h"
+#include "plog/include/plog/Log.h"
 #include "cfgSettings.h"
 
 #define CFG_PATH "cfg/testLibConfig.cfg"

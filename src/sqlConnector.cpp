@@ -5,7 +5,7 @@
 *   Author: Ivan Moreno
 *     April 2019
 */
-#include "plog/Log.h"
+#include "plog/include/plog/Log.h"
 #include "sqlConnector.h"
 
 sqlConnector::sqlConnector() {

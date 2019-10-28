@@ -2,7 +2,7 @@
 #include <string.h>
 #include <iostream>
 
-#include "plog/Log.h"
+#include "plog/include/plog/Log.h"
 #include "serial.h"
 
 Serial::Serial() {

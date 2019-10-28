@@ -2,7 +2,7 @@
 #include <time.h>
 #include <string.h>
 
-#include "plog/Log.h"
+#include "plog/include/plog/Log.h"
 #include "commonConfig.h"
 #include "MCP3424.h"
 #include "bme280.h"
