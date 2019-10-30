@@ -45,6 +45,7 @@ private:
     uint8_t _config;
     uint8_t _sign;
     uint8_t _generalError;
+    double _voltage;
 
     uint8_t writeConfig();
     void configSetBit(uint8_t bit,uint8_t value);
@@ -65,9 +66,7 @@ public:
     double readVoltage();
     double readVoltage(uint8_t channel);
     double getVoltage();
-
 };
-
 
 #endif //MCP3424_H_
 
