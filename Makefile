@@ -8,7 +8,7 @@ BIN_PATH = $(BUILD_PATH)/bin
 
 # executable - buld time YearMonthDay #
 BIN_NAME = emca
-BIN_BUILD = $(BIN_NAME)-$(shell date +'%Y%m%d')
+BIN_BUILD = $(BIN_NAME)-$(shell git describe --always | sed -e "s/^v//")
 
 # extensions #
 SRC_EXT = cpp
