@@ -1,6 +1,6 @@
 #include <string.h>
 #include <stdio.h>
-#include "plog/Log.h"
+#include "plog/include/plog/Log.h"
 #include "clientModel.h"
 
 static void hex2str(lora_payload *_lp,char *str) {

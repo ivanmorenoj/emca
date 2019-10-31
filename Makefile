@@ -6,8 +6,9 @@ SRC_PATH = src
 BUILD_PATH = build
 BIN_PATH = $(BUILD_PATH)/bin
 
-# executable # 
+# executable - buld time YearMonthDay #
 BIN_NAME = emca
+BIN_BUILD = $(BIN_NAME)-$(shell date +'%Y%m%d')
 
 # extensions #
 SRC_EXT = cpp
@@ -25,6 +26,7 @@ SYSTEMD_UNIT	= release/emca.service
 
 #container options
 CONTAINER_NAME	= ivan28823/emcaworkspace
+WHAT_DOCKER = sudo podman
 
 # code lists #
 # Find all source files in the source directory, sorted by
@@ -38,7 +40,7 @@ DEPS = $(OBJECTS:.o=.d)
 
 # flags #
 COMPILE_FLAGS = -Wall -g
-INCLUDES = -I include -I /usr/include/cppconn -I src/
+INCLUDES = -I include -I include/plog/include -I /usr/include/cppconn -I src/
 # Space-separated pkg-config libraries used by this project
 LIBS = -lmysqlcppconn -lwiringPi -lm -lconfig++
 
@@ -65,13 +67,13 @@ clean:
 
 # checks the executable and symlinks to the output
 .PHONY: all
-all: dirs $(BIN_PATH)/$(BIN_NAME)
+all: $(BIN_PATH)/$(BIN_BUILD)
 	@echo "[LOG] Making symlink: $(BIN_NAME) -> $<"
 	@$(RM) $(BIN_NAME)
-	@ln -s $(BIN_PATH)/$(BIN_NAME) $(BIN_NAME)
+	@ln -s $(BIN_PATH)/$(BIN_BUILD) $(BIN_NAME)
 
 # Creation of the executable
-$(BIN_PATH)/$(BIN_NAME): $(OBJECTS)
+$(BIN_PATH)/$(BIN_BUILD): $(OBJECTS)
 	@echo "[LOG] Linking: $@"
 	@$(CXX) $(OBJECTS) $(LIBS) -o $@
 
@@ -86,9 +88,9 @@ $(BUILD_PATH)/%.o: $(SRC_PATH)/%.$(SRC_EXT)
 	@$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
 
 # Install the binary on /usr/bin/ directory
-install: dirs $(BIN_PATH)/$(BIN_NAME)
+install: dirs $(BIN_PATH)/$(BIN_BUILD)
 	@echo "[LOG] Installing on /usr/bin/$(BIN_NAME)" 
-	@cp $(BIN_PATH)/$(BIN_NAME) /usr/bin/
+	@cp $(BIN_PATH)/$(BIN_BUILD) /usr/bin/$(BIN_NAME)
 	@echo "[LOG] copy $(CFG_FILE) on /etc/emca/config.cfg" 
 	@mkdir -p /etc/emca/
 	@cp $(CFG_FILE) /etc/emca/config.cfg 
@@ -99,9 +101,9 @@ install: dirs $(BIN_PATH)/$(BIN_NAME)
 	@systemctl daemon-reload
 
 # only copy the bin to path
-install_bin: $(BIN_PATH)/$(BIN_NAME)
-	@echo "[LOG] Installing $(BIN_PATH)/$(BIN_NAME) on /usr/bin/$(BIN_NAME)" 
-	@cp $(BIN_PATH)/$(BIN_NAME) /usr/bin/
+install_bin: $(BIN_PATH)/$(BIN_BUILD)
+	@echo "[LOG] Installing $(BIN_PATH)/$(BIN_BUILD) on /usr/bin/$(BIN_NAME)" 
+	@cp $(BIN_PATH)/$(BIN_BUILD) /usr/bin/$(BIN_NAME)
 
 # Copy all project to remote host, you have to fill remote variables
 # this way is easier than type a scp command each time to copy the dev
@@ -116,7 +118,7 @@ remote_copy:
 	@rsync -avzhe ssh --progress * $(REMOTE_USER)@$(REMOTE_HOST):$(REMOTE_DIR)
 
 # Excecuting binary
-exe:	dirs $(BIN_PATH)/$(BIN_NAME)
+exe:	dirs $(BIN_PATH)/$(BIN_BUILD)
 	@echo "[LOG] Excecuting $(BIN_NAME)"
 	@./$(BIN_NAME)
 
@@ -124,15 +126,15 @@ exe:	dirs $(BIN_PATH)/$(BIN_NAME)
 .PHONY: qemu
 qemu:
 	@echo "[LOG] qemu"
-	@docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+	@$(WHAT_DOCKER) run --rm --privileged multiarch/qemu-user-static --reset -p yes
 
 #compile in amd64 for armv7l (raspberry pi 3) using qemu-arm-static
 build_arm:
 	@echo "[LOG] Building in docker container workdir: $(PWD)"
-	@docker run --rm -it \
+	@$(WHAT_DOCKER) run --rm -it \
 		-v $(PWD):/workdir  \
 		$(CONTAINER_NAME)
 
 build_ws:
 	@echo "[LOG] Building docker container as $(CONTAINER_NAME)"
-	@docker build -t $(CONTAINER_NAME) . 
+	@$(WHAT_DOCKER) build -t $(CONTAINER_NAME) . 
