@@ -47,6 +47,7 @@ RUN apt-get update && \
     libi2c-dev \
     gcc \
     g++ \
+    git \
     make && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
