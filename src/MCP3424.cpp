@@ -90,7 +90,7 @@ uint32_t MCP3424::readRaw() {
 
     if (tries < 1) {
         _generalError++;
-        PLOG_FATAL << "Failed to write ConfigRegister, errCnt: " << _generalError;
+        PLOG_FATAL << "Failed to write ConfigRegister, errCnt: " << (int)_generalError;
         closeI2C();
         return 0;
     }
@@ -101,7 +101,7 @@ uint32_t MCP3424::readRaw() {
 
     if (tries < 1) {
         _generalError++;
-        PLOG_FATAL << "Failed to read ConfigRegister, errCnt: " << _generalError;
+        PLOG_FATAL << "Failed to read ConfigRegister, errCnt: " << (int)_generalError;
         closeI2C();
         return 0;
     }
@@ -205,8 +205,8 @@ double MCP3424::readVoltage() {
     uint32_t raw;
     raw = readRaw();
 
-    if (_generalError > 10) {
-        PLOG_FATAL << "Error count > 10, exit on failure";
+    if (_generalError > 2) {
+        PLOG_FATAL << "Error count > 2, exit on failure";
         exit(EXIT_FAILURE);
     }
 
