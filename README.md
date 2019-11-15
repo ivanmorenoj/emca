@@ -83,14 +83,14 @@ The config file is saved in `/etc/emca/config.cfg`
         - **Sensor**
             - **SensorType:** *type of sensor (CO,NO2,SO2, etc), see include/commonConfig.h*
             - **Compensate:** *choose the specific sensor (B4 or A4), see include/commonConfig.h*
-            - **Algorithm:** *choose the algorithm acording to sensor* 
+            - **Algorithm:** *choose the algorithm acording to sensor [1 - 4]* 
             - **we_electronic:** *working electrode electronic offset in vols, see delivery bag*
             - **we_total:** *working electrode total offset in volts, see delivery bag*
             - **ae_electronic:** *auxiliar electrode electronic offset in volts, see delivery bag*
             - **ae_total:** *auxiliar electrode total offset in volts, see delivery bag*
             - **sensitivity:** *sensitivity in volts, see delivery bag*
         - **Adc:** *2 objets per sensor, for WE and AE*
-            - **address:** *address of mcp2434 chip*
+            - **address:** *address of mcp3424 chip*
             - **bitrate:** *resolution in bits 12, 14, 16 or 18*
             - **pga:** *programmable gain 1, 2, 4 or 8*
             - **convmode:** *conversion mode, continuos(1) or one shot(0)*
@@ -103,8 +103,8 @@ The config file is saved in `/etc/emca/config.cfg`
             - **humidity:** *[min ,max] float array in %*
             - **ranges:** *[min ,max] float array in ppb*
     - **aeroqual** 
-        **Adc       :** *the same as alphasense config* 
-        **Operation :** *the same as alphasense config*
+        - **Adc       :** *the same as alphasense sensor config* 
+        - **Operation :** *the same as alphasense sensor config*
  - **LoRa**
     - **port:** *serial port of usb stick*
     - **txPower:** *transmission power 0 - 15*
