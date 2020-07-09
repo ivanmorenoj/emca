@@ -2,12 +2,12 @@
 CXX ?= g++
 
 # path #
-SRC_PATH = src
+SRC_PATH   = src
 BUILD_PATH = build
-BIN_PATH = $(BUILD_PATH)/bin
+BIN_PATH   = $(BUILD_PATH)/bin
 
 # executable - buld time YearMonthDay #
-BIN_NAME = emca
+BIN_NAME  = emca
 BIN_BUILD = $(BIN_NAME)-$(shell git describe --always | sed -e "s/^v//")
 
 # extensions #
@@ -16,17 +16,17 @@ SRC_EXT = cpp
 # remote host copy #
 REMOTE_USER = pi
 REMOTE_HOST = rpi
-REMOTE_DIR	= ~/emca_gases/
-REMOTE_WAN	= ivan28823.duckdns.org
-WAN_PORT	= 9796
+REMOTE_DIR  = ~/emca_gases/
+REMOTE_WAN  = ivan28823.duckdns.org
+WAN_PORT    = 9796
 
 # config file
-CFG_FILE 		= mainConfig.cfg
-SYSTEMD_UNIT	= release/emca.service
+CFG_FILE     = mainConfig.cfg
+SYSTEMD_UNIT = release/emca.service
 
 #container options
-CONTAINER_NAME	= ivan28823/emcaworkspace
-WHAT_DOCKER = sudo podman
+CONTAINER_NAME = ivan28823/emcaworkspace
+WHAT_DOCKER    = sudo podman
 
 # code lists #
 # Find all source files in the source directory, sorted by
