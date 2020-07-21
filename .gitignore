@@ -1,3 +1,4 @@
+.ycm*.py
 .vscode/
 .workspacedep/
 build/
