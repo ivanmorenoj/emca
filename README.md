@@ -1,6 +1,6 @@
 # EMCA 
 ## Air quality monitoring system
-![](https://github.com/ivan28823/emca/workflows/check-build/badge.svg)
+![](https://github.com/ivanmorenoj/emca/workflows/check-build/badge.svg)
 
 ***This program was developed by Ivan Moreno as part of his thesis project.***
 The projet get the gas concentration of alphasense (CO,NO2,SO2) and aeroqual (O3), process and save in mariadb database and finally send these values over a LoRaWAN Network.
