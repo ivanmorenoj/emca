@@ -6,16 +6,16 @@
 #       -v /path/to/workdir:/workdir \
 #       ivan28823/emcaworkspace 
 
-FROM arm32v7/debian:buster-slim AS builder
+FROM docker.io/arm32v7/debian:buster-slim AS builder
 
-#	docker run --rm --privileged multiarch/qemu-user-static:register
-# need to install qemu-arm-static in your system
-#   for debian based apt-get install -y --no-install-recommends qemu-user-static
-#   for archlinux based via aur yay -S qemu-user-static
-# then copy /usr/bin/qemu-arch-static to workdir
-COPY qemu-arm-static /usr/bin/qemu-arm-static
+# install QEMU multiarch for arm
+#	docker run --rm --privileged docker.io/multiarch/qemu-user-static --reset -p yes
+
+# Download qemu-user-static
+ADD https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-arm-static /usr/bin/qemu-arm-static
 
 # install build dependencies 
+ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     gcc \
@@ -32,13 +32,14 @@ RUN apt-get update && \
     cd wiringPi && \
     ./build
 
-FROM arm32v7/debian:buster-slim
+FROM docker.io/arm32v7/debian:buster-slim
 
 # copy from builder
-COPY qemu-arm-static /usr/bin/qemu-arm-static
+COPY --from=builder /usr/bin/qemu-arm-static /usr/bin/qemu-arm-static
 COPY --from=builder /usr/local/lib/libwiringPi* /usr/lib/
 COPY --from=builder /usr/local/include/wiring* /usr/include/
 
+ENV DEBIAN_FRONTEND noninteractive
 # install dependencies
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -54,7 +55,7 @@ RUN apt-get update && \
 #change workdir
 WORKDIR /workdir
 
-RUN useradd -Ms /bin/bash develop && chown develop /workdir
+RUN useradd -Ms /bin/bash develop && chown develop:develop /workdir
 
 USER develop
 

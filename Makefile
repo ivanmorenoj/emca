@@ -25,7 +25,7 @@ CFG_FILE     = mainConfig.cfg
 SYSTEMD_UNIT = release/emca.service
 
 #container options
-CONTAINER_NAME = ivan28823/emcaworkspace
+CONTAINER_NAME = ivanmorenoj/emcaworkspace:latest
 WHAT_DOCKER    = sudo podman
 
 # code lists #
@@ -123,13 +123,12 @@ exe:	dirs $(BIN_PATH)/$(BIN_BUILD)
 	@./$(BIN_NAME)
 
 #install qemu multiarch support
-.PHONY: qemu
 qemu:
 	@echo "[LOG] qemu"
-	@$(WHAT_DOCKER) run --rm --privileged multiarch/qemu-user-static --reset -p yes
+	@$(WHAT_DOCKER) run --rm --privileged docker.io/multiarch/qemu-user-static --reset -p yes
 
 #compile in amd64 for armv7l (raspberry pi 3) using qemu-arm-static
-build_arm:
+build_arm: qemu build_ws
 	@echo "[LOG] Building in docker container workdir: $(PWD)"
 	@$(WHAT_DOCKER) run --rm -it \
 		-v $(PWD):/workdir  \
