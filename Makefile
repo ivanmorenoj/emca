@@ -26,7 +26,7 @@ SYSTEMD_UNIT = release/emca.service
 
 #container options
 CONTAINER_NAME = ivanmorenoj/emcaworkspace:latest
-WHAT_DOCKER    = sudo podman
+WHAT_DOCKER    = sudo docker
 
 # code lists #
 # Find all source files in the source directory, sorted by

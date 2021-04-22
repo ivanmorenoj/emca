@@ -1,10 +1,5 @@
 # Author: Ivan Moreno
 #   July 2019
-#
-# to run this image use the next command
-#   docker run --rm -it \
-#       -v /path/to/workdir:/workdir \
-#       ivan28823/emcaworkspace 
 
 FROM docker.io/arm32v7/debian:buster-slim AS builder
 
@@ -18,14 +13,7 @@ ADD https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-    gcc \
-    g++ \
-    make \
-    git \
-    sudo \
-    apt-transport-https \
-    ca-certificates \
-    gnupg2 \
+    gcc g++ make git sudo apt-transport-https ca-certificates gnupg2 \
     software-properties-common && \
     cd /tmp/ && \
     git clone http://github.com/WiringPi/WiringPi.git wiringPi && \
@@ -43,13 +31,8 @@ ENV DEBIAN_FRONTEND noninteractive
 # install dependencies
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-    libconfig++-dev \
-    libmysqlcppconn-dev \
-    libi2c-dev \
-    gcc \
-    g++ \
-    git \
-    make && \
+    libconfig++-dev libmysqlcppconn-dev \
+    libi2c-dev gcc g++ git make && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 #change workdir
